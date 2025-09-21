@@ -11,6 +11,8 @@ use App\Models\FtsFuzzySet;
 use App\Models\FtsFuzzification;
 use App\Models\FtsFlr;
 use App\Models\FtsFlrgItem;
+use App\Models\FtsMarkovMatrix;
+use App\Models\FtsMarkovCell;
 
 class PenjualanController extends Controller
 {
@@ -150,8 +152,11 @@ class PenjualanController extends Controller
             $flrg[$it->current_state][$it->next_state] = $it->freq;
         }
 
+        $matrix = FtsMarkovMatrix::where('interval_set_id', $set->id)->first();
+        $cells = $matrix ? $matrix->cells()->orderBy('row_state')->orderBy('col_state')->get() : collect();
+
         return view('admin.fts-semesta', [
-            // ... payload yang sudah ada:
+            // ...payload lama...
             'produk' => $row->nama_produk,
             'series' => $series,
             'universe' => $universe,
@@ -161,7 +166,11 @@ class PenjualanController extends Controller
             'fuzzis' => $fuzzis,
             'flrs' => $flrs,
             'flrg' => $flrg,
+            // baru:
+            'markov' => $matrix,
+            'markovCells' => $cells,
         ]);
+
 
 
     }
@@ -260,6 +269,7 @@ class PenjualanController extends Controller
         $this->computeFuzzifications($universe, $set, $series, $values);
         $this->computeFLR($set);
         $this->computeFLRG($set);
+        $this->computeMarkovMatrix($set);
 
     }
 
@@ -447,6 +457,53 @@ class PenjualanController extends Controller
             }
         }
     }
+    protected function computeMarkovMatrix(FtsIntervalSet $set): FtsMarkovMatrix
+    {
+        // Ambil FLRG (freq per current_state -> next_state)
+        $items = FtsFlrgItem::where('interval_set_id', $set->id)->get();
+
+        // Daftar state A1..Ak (urut)
+        $k = (int) $set->k_interval;
+        $states = [];
+        for ($i = 1; $i <= $k; $i++)
+            $states[] = 'A' . $i;
+
+        // Siapkan row totals
+        $rowTotals = array_fill_keys($states, 0);
+        foreach ($items as $it) {
+            $rowTotals[$it->current_state] += (int) $it->freq;
+        }
+
+        // Buat/refresh header matriks
+        $matrix = FtsMarkovMatrix::updateOrCreate(
+            ['interval_set_id' => $set->id],
+            ['k_state' => $k]
+        );
+
+        // Hapus isi lama
+        FtsMarkovCell::where('matrix_id', $matrix->id)->delete();
+
+        // Isi sel (termasuk 0) untuk seluruh pasangan (Ai, Aj)
+        foreach ($states as $rs) {
+            $den = max(0, (int) ($rowTotals[$rs] ?? 0)); // bisa 0 (baris kosong)
+            foreach ($states as $cs) {
+                $freq = (int) ($items->firstWhere(fn($x) => $x->current_state === $rs && $x->next_state === $cs)->freq ?? 0);
+                $prob = $den > 0 ? $freq / $den : 0.0;
+
+                FtsMarkovCell::create([
+                    'matrix_id' => $matrix->id,
+                    'row_state' => $rs,
+                    'col_state' => $cs,
+                    'freq' => $freq,
+                    'row_total' => $den,
+                    'prob' => $prob,
+                ]);
+            }
+        }
+
+        return $matrix;
+    }
+
 
 
 

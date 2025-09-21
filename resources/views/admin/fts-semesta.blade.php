@@ -266,13 +266,14 @@
                     <div class="col-6">
                         {{-- FLR: Fuzzy Logical Relationship --}}
                         <div class="card mt-4">
-                            <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 6</span> Fuzzy Logical Relationship (FLR)</div>
+                            <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 6</span> Fuzzy
+                                Logical Relationship (FLR)</div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped align-middle">
                                         <thead class="table-light">
                                             <tr>
-                                                <th style="width:120px;">Periode</th>
+                                                <th>Periode</th>
                                                 <th>FLR</th>
                                             </tr>
                                         </thead>
@@ -296,7 +297,8 @@
                     <div class="col-6">
                         {{-- FLRG: Fuzzy Logical Relationship Group --}}
                         <div class="card mt-3">
-                            <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 7</span> Fuzzy Logical Relationship Group (FLRG)</div>
+                            <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 7</span> Fuzzy
+                                Logical Relationship Group (FLRG)</div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered align-middle">
@@ -334,6 +336,96 @@
                                     frekuensi kemunculan state berikutnya.</small>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-6">
+                        {{-- MARKOV TRANSITION PROBABILITY MATRIX (R) --}}
+                        @if ($markov)
+                            <div class="card mt-4">
+                                <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 8</span>
+                                    Matriks Probabilitas Transisi Markov (R) — Pecahan</div>
+                                <div class="card-body">
+                                    @php
+                                        $states = [];
+                                        for ($i = 1; $i <= ($iset->k_interval ?? 0); $i++) {
+                                            $states[] = 'A' . $i;
+                                        }
+
+                                        // Bentuk grid [row_state][col_state] => cell
+                                        $grid = [];
+                                        foreach ($markovCells as $c) {
+                                            $grid[$c->row_state][$c->col_state] = $c;
+                                        }
+                                    @endphp
+
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered align-middle text-center">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>R</th>
+                                                    @foreach ($states as $cs)
+                                                        <th>{{ $cs }}</th>
+                                                    @endforeach
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($states as $rs)
+                                                    <tr>
+                                                        <th class="table-light">{{ $rs }}</th>
+                                                        @foreach ($states as $cs)
+                                                            @php
+                                                                $cell = $grid[$rs][$cs] ?? null;
+                                                                $num = $cell?->freq ?? 0;
+                                                                $den = $cell?->row_total ?? 0;
+                                                                $txt = $den > 0 ? $num . ' / ' . $den : '0';
+                                                            @endphp
+                                                            <td>{{ $txt }}</td>
+                                                        @endforeach
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <small class="text-muted">Baris tanpa transisi keluar (total=0) ditampilkan sebagai
+                                        0.</small>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header fw-bold">Matriks Probabilitas Transisi Markov (R) — Desimal</div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered align-middle text-center">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>R</th>
+                                                    @foreach ($states as $cs)
+                                                        <th>{{ $cs }}</th>
+                                                    @endforeach
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($states as $rs)
+                                                    <tr>
+                                                        <th class="table-light">{{ $rs }}</th>
+                                                        @foreach ($states as $cs)
+                                                            @php
+                                                                $cell = $grid[$rs][$cs] ?? null;
+                                                                $p = $cell?->prob ?? 0;
+                                                            @endphp
+                                                            <td>{{ rtrim(rtrim(number_format($p, 2, '.', ''), '0'), '.') }}
+                                                            </td>
+                                                        @endforeach
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <small class="text-muted">Nilai desimal dibulatkan 2 angka seperti contoh (0.5, 0.25,
+                                        dst).</small>
+                                </div>
+                            </div>
+                        @endif
+
                     </div>
 
                 </div>
