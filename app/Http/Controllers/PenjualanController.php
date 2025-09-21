@@ -7,6 +7,10 @@ use App\Models\Penjualan;
 use Illuminate\Http\Request;
 use App\Models\FtsIntervalSet;
 use App\Models\FtsInterval;
+use App\Models\FtsFuzzySet;
+use App\Models\FtsFuzzification;
+use App\Models\FtsFlr;
+use App\Models\FtsFlrgItem;
 
 class PenjualanController extends Controller
 {
@@ -38,9 +42,6 @@ class PenjualanController extends Controller
         $data = $this->validateData($request, $row->id);
 
         $row->update($data);
-
-        // (Opsional) kalau kamu ingin re-proses Semesta U saat update:
-        // $this->processSemestaUFromRow($row);
 
         return redirect()->route('penjualan.index')
             ->with('success', 'Data penjualan berhasil diperbarui.');
@@ -129,16 +130,40 @@ class PenjualanController extends Controller
             $set = $this->computeIntervalsFromUniverse($universe, count($values));
         }
 
-        // Ambil daftar interval u1..uK
         $intervals = $set->intervals()->get();
 
+        $fuzzySets = FtsFuzzySet::where('interval_set_id', $set->id)
+            ->orderBy('urut')->get();
+
+        $fuzzis = FtsFuzzification::where('interval_set_id', $set->id)
+            ->orderBy('urut')->get();
+
+        $flrs = FtsFlr::where('interval_set_id', $set->id)->orderBy('urut_from')->get();
+
+        $flrgRaw = FtsFlrgItem::where('interval_set_id', $set->id)
+            ->orderBy('current_state')
+            ->orderBy('next_state')
+            ->get();
+
+        $flrg = [];
+        foreach ($flrgRaw as $it) {
+            $flrg[$it->current_state][$it->next_state] = $it->freq;
+        }
+
         return view('admin.fts-semesta', [
+            // ... payload yang sudah ada:
             'produk' => $row->nama_produk,
             'series' => $series,
             'universe' => $universe,
             'iset' => $set,
             'intervals' => $intervals,
+            'fuzzySets' => $fuzzySets,
+            'fuzzis' => $fuzzis,
+            'flrs' => $flrs,
+            'flrg' => $flrg,
         ]);
+
+
     }
 
 
@@ -229,7 +254,13 @@ class PenjualanController extends Controller
         );
 
         // 2) Interval (Sturges + panjang interval + daftar u1..uK)
-        $this->computeIntervalsFromUniverse($universe, count($values));
+        $set = $this->computeIntervalsFromUniverse($universe, count($values));
+
+        $this->ensureFuzzySetsForIntervalSet($set);
+        $this->computeFuzzifications($universe, $set, $series, $values);
+        $this->computeFLR($set);
+        $this->computeFLRG($set);
+
     }
 
     protected function computeIntervalsFromUniverse(FtsUniverse $universe, int $N): FtsIntervalSet
@@ -281,5 +312,143 @@ class PenjualanController extends Controller
 
         return $set;
     }
+
+    protected function ensureFuzzySetsForIntervalSet(FtsIntervalSet $set): void
+    {
+        // Hapus & rebuild agar selalu konsisten dengan k=5
+        FtsFuzzySet::where('interval_set_id', $set->id)->delete();
+
+        // Matriks membership sesuai instruksi:
+        // A1=1/u1 + 0.5/u2
+        // A2=0.5/u1 + 1/u2 + 0.5/u3
+        // A3=0.5/u2 + 1/u3 + 0.5/u4
+        // A4=0.5/u3 + 1/u4 + 0.5/u5
+        // A5=0.5/u4 + 1/u5
+        $rows = [
+            ['kode' => 'A1', 'urut' => 1, 'mu' => [1, 0.5, 0, 0, 0]],
+            ['kode' => 'A2', 'urut' => 2, 'mu' => [0.5, 1, 0.5, 0, 0]],
+            ['kode' => 'A3', 'urut' => 3, 'mu' => [0, 0.5, 1, 0.5, 0]],
+            ['kode' => 'A4', 'urut' => 4, 'mu' => [0, 0, 0.5, 1, 0.5]],
+            ['kode' => 'A5', 'urut' => 5, 'mu' => [0, 0, 0, 0.5, 1]],
+        ];
+
+        foreach ($rows as $r) {
+            FtsFuzzySet::create([
+                'interval_set_id' => $set->id,
+                'kode' => $r['kode'],
+                'urut' => $r['urut'],
+                'mu_u1' => $r['mu'][0],
+                'mu_u2' => $r['mu'][1],
+                'mu_u3' => $r['mu'][2],
+                'mu_u4' => $r['mu'][3],
+                'mu_u5' => $r['mu'][4],
+            ]);
+        }
+    }
+
+    protected function computeFuzzifications(
+        FtsUniverse $universe,
+        FtsIntervalSet $set,
+        array $series, // [['label'=>'April 2024','jumlah'=>174], ...] urutan April..Maret
+        array $values  // [174,156,...]
+    ): void {
+        // Hapus hasil lama untuk set ini agar konsisten
+        FtsFuzzification::where('interval_set_id', $set->id)->delete();
+
+        $intervals = $set->intervals()->get(); // u1..u5
+        $k = $intervals->count();
+
+        foreach ($series as $i => $row) {
+            $x = (float) $row['jumlah'];
+
+            // Cari u_j yang memuat x (inklusif batas atas untuk interval terakhir)
+            $chosen = null;
+            foreach ($intervals as $idx => $iv) {
+                $lower = (float) $iv->lower_bound;
+                $upper = (float) $iv->upper_bound;
+
+                $in = ($idx < $k - 1)
+                    ? ($x >= $lower && $x < $upper)   // interval biasa: [lower, upper)
+                    : ($x >= $lower && $x <= $upper); // interval terakhir: [lower, upper]
+
+                if ($in) {
+                    $chosen = $iv;
+                    break;
+                }
+            }
+
+            // Map u_j -> A_j (sesuai tabel kamu)
+            $fuzzyKode = $chosen ? ('A' . $chosen->urut) : null;
+            $intKode = $chosen ? $chosen->kode : null;
+
+            FtsFuzzification::create([
+                'universe_id' => $universe->id,
+                'interval_set_id' => $set->id,
+                'produk' => $universe->produk,
+                'urut' => $i + 1,
+                'periode_label' => $row['label'],
+                'nilai' => (int) $row['jumlah'],
+                'interval_kode' => $intKode,       // u1..u5
+                'fuzzy_kode' => $fuzzyKode,     // A1..A5
+            ]);
+        }
+    }
+
+    protected function computeFLR(FtsIntervalSet $set): void
+    {
+        // Bersihkan data lama agar konsisten
+        FtsFlr::where('interval_set_id', $set->id)->delete();
+
+        $rows = FtsFuzzification::where('interval_set_id', $set->id)
+            ->orderBy('urut')->get();
+
+        for ($i = 0; $i < $rows->count() - 1; $i++) {
+            $cur = $rows[$i];
+            $nxt = $rows[$i + 1];
+
+            FtsFlr::create([
+                'interval_set_id' => $set->id,
+                'urut_from' => $cur->urut,
+                'urut_to' => $nxt->urut,
+                'periode_from' => $cur->periode_label,
+                'periode_to' => $nxt->periode_label,
+                'state_from' => $cur->fuzzy_kode, // Ai
+                'state_to' => $nxt->fuzzy_kode, // Aj
+            ]);
+        }
+    }
+
+    protected function computeFLRG(FtsIntervalSet $set): void
+    {
+        FtsFlrgItem::where('interval_set_id', $set->id)->delete();
+
+        $flrs = FtsFlr::where('interval_set_id', $set->id)->orderBy('urut_from')->get();
+
+        // Kelompokkan berdasarkan current_state lalu hitung frekuensi next_state
+        $grouped = [];
+        foreach ($flrs as $r) {
+            $cs = $r->state_from;  // A1..A5
+            $ns = $r->state_to;    // A1..A5
+            if (!isset($grouped[$cs]))
+                $grouped[$cs] = [];
+            if (!isset($grouped[$cs][$ns]))
+                $grouped[$cs][$ns] = 0;
+            $grouped[$cs][$ns] += 1;
+        }
+
+        foreach ($grouped as $cs => $nexts) {
+            foreach ($nexts as $ns => $freq) {
+                FtsFlrgItem::create([
+                    'interval_set_id' => $set->id,
+                    'current_state' => $cs,
+                    'next_state' => $ns,
+                    'freq' => $freq,
+                ]);
+            }
+        }
+    }
+
+
+
 
 }
