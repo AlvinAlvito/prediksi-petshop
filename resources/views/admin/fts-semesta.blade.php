@@ -294,7 +294,7 @@
                         </div>
 
                     </div>
-                    <div class="col-6">
+                    <div class="col-12">
                         {{-- FLRG: Fuzzy Logical Relationship Group --}}
                         <div class="card mt-3">
                             <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 7</span> Fuzzy
@@ -337,10 +337,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="row">
                         {{-- MARKOV TRANSITION PROBABILITY MATRIX (R) --}}
                         @if ($markov)
-                            <div class="card mt-4">
+                            <div class="col-6">
+                                <div class="card mt-4">
                                 <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 8</span>
                                     Matriks Probabilitas Transisi Markov (R) — Pecahan</div>
                                 <div class="card-body">
@@ -389,8 +390,10 @@
                                         0.</small>
                                 </div>
                             </div>
+                            </div>
 
-                            <div class="card mt-3">
+                           <div class="col-6">
+                             <div class="card mt-3">
                                 <div class="card-header fw-bold">Matriks Probabilitas Transisi Markov (R) — Desimal</div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -422,6 +425,66 @@
                                     </div>
                                     <small class="text-muted">Nilai desimal dibulatkan 2 angka seperti contoh (0.5, 0.25,
                                         dst).</small>
+                                </div>
+                            </div>
+                           </div>
+                        @endif
+
+                    </div>
+
+                    <div class="col-12">
+                        {{-- HASIL PERAMALAN AWAL F(t) --}}
+                        @if (!empty($forecasts) && count($forecasts) > 0)
+                            <div class="card mt-4">
+                                <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 9</span> Hasil Peramalan Awal F(t)</div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th >Periode</th>
+                                                    <th class="text-end">Data Aktual Y(t)</th>
+                                                    <th class="text-end">Peramalan Awal F(t)</th>
+                                                    <th class="text-center">State (t−1)</th>
+                                                    <th class="text-end">Y(t−1)</th>
+                                                    <th class="text-center">P(baris)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($forecasts as $fc)
+                                                    <tr>
+                                                        <td>{{ $fc->periode_label }}</td>
+                                                        <td class="text-end">
+                                                            {{ number_format($fc->y_actual, 0, ',', '.') }}</td>
+                                                        <td class="text-end">
+                                                            {{ $fc->f_value !== null ? number_format($fc->f_value, 2, '.', '') : '-' }}
+                                                        </td>
+                                                        <td class="text-center">{{ $fc->prev_state ?? '-' }}</td>
+                                                        <td class="text-end">
+                                                            {{ $fc->y_prev !== null ? number_format($fc->y_prev, 0, ',', '.') : '-' }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @if ($fc->prev_state)
+                                                                [{{ rtrim(rtrim(number_format($fc->p1, 2, '.', ''), '0'), '.') }},
+                                                                {{ rtrim(rtrim(number_format($fc->p2, 2, '.', ''), '0'), '.') }},
+                                                                {{ rtrim(rtrim(number_format($fc->p3, 2, '.', ''), '0'), '.') }},
+                                                                {{ rtrim(rtrim(number_format($fc->p4, 2, '.', ''), '0'), '.') }},
+                                                                {{ rtrim(rtrim(number_format($fc->p5, 2, '.', ''), '0'), '.') }}]
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <small class="text-muted">
+                                        Rumus: untuk baris state A<sub>i</sub> (bulan t−1), F(t) = Y(t−1)·P<sub>ii</sub> +
+                                        ∑<sub>j≠i</sub> m<sub>j</sub>·P<sub>ij</sub>.
+                                        Nilai m<sub>j</sub> diambil dari mid-point tiap interval u<sub>j</sub>.
+                                    </small>
                                 </div>
                             </div>
                         @endif
