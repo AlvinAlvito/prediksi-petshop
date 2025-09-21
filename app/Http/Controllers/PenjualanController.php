@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\FtsUniverse;
 use App\Models\Penjualan;
 use Illuminate\Http\Request;
+use App\Models\FtsIntervalSet;
+use App\Models\FtsInterval;
 
 class PenjualanController extends Controller
 {
@@ -122,11 +124,20 @@ class PenjualanController extends Controller
                 series: $series
             );
         }
+        $set = FtsIntervalSet::where('universe_id', $universe->id)->where('method', 'sturges')->first();
+        if (!$set) {
+            $set = $this->computeIntervalsFromUniverse($universe, count($values));
+        }
+
+        // Ambil daftar interval u1..uK
+        $intervals = $set->intervals()->get();
 
         return view('admin.fts-semesta', [
             'produk' => $row->nama_produk,
             'series' => $series,
             'universe' => $universe,
+            'iset' => $set,
+            'intervals' => $intervals,
         ]);
     }
 
@@ -203,13 +214,11 @@ class PenjualanController extends Controller
     protected function processSemestaUFromRow(Penjualan $row): void
     {
         [$series, $values] = $this->buildSeriesFromRow($row);
-
-        // Sesuai contoh: D1 = 2, D2 = 2
         $d1 = 2;
         $d2 = 2;
 
-        // Periode dikosongkan (NULL) karena tabel penjualans kamu belum menyimpan tahun/rentang
-        $this->computeUniverse(
+        // 1) Semesta U
+        $universe = $this->computeUniverse(
             produk: $row->nama_produk,
             periodeMulai: null,
             periodeSelesai: null,
@@ -218,5 +227,59 @@ class PenjualanController extends Controller
             d2: $d2,
             series: $series
         );
+
+        // 2) Interval (Sturges + panjang interval + daftar u1..uK)
+        $this->computeIntervalsFromUniverse($universe, count($values));
     }
+
+    protected function computeIntervalsFromUniverse(FtsUniverse $universe, int $N): FtsIntervalSet
+    {
+        // --- Sturges ---
+        // k = round(1 + 3.322*log10(N))  -> contoh: N=12, 1+3.322*log10(12)=4.584 → 5
+        $k = max(1, (int) round(1 + 3.322 * log10(max(1, $N))));
+
+        $range = $universe->u_max - $universe->u_min;      // 328 - 154 = 174
+        $l = $k > 0 ? ($range / $k) : $range;          // 174 / 5 = 34.8
+
+        // Buat/Update header set
+        $set = FtsIntervalSet::updateOrCreate(
+            ['universe_id' => $universe->id, 'method' => 'sturges'],
+            [
+                'produk' => $universe->produk,
+                'n_period' => $N,
+                'k_interval' => $k,
+                'l_interval' => $l,
+                'u_min' => $universe->u_min,
+                'u_max' => $universe->u_max,
+            ]
+        );
+
+        // Hapus interval lama agar konsisten
+        FtsInterval::where('interval_set_id', $set->id)->delete();
+
+        // Generate interval u1..uK
+        $uMin = (float) $universe->u_min;
+        $uMax = (float) $universe->u_max;
+
+        for ($i = 0; $i < $k; $i++) {
+            $lower = $uMin + $i * $l;
+            $upper = $uMin + ($i + 1) * $l;
+            if ($i === $k - 1)
+                $upper = $uMax; // pastikan interval terakhir tepat ke u_max
+
+            $mid = ($lower + $upper) / 2.0;
+
+            FtsInterval::create([
+                'interval_set_id' => $set->id,
+                'kode' => 'u' . ($i + 1),
+                'urut' => $i + 1,
+                'lower_bound' => $lower,
+                'upper_bound' => $upper,
+                'mid_point' => $mid,
+            ]);
+        }
+
+        return $set;
+    }
+
 }

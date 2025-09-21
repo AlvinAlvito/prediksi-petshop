@@ -191,38 +191,38 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label>Nama Produk</label>
-                            <input type="text" name="nama_produk" class="form-control" placeholder="Cat Choize Adult"
-                                required>
+                            <input type="text" name="nama_produk" class="form-control" value="Cat Choize Adult" required>
                         </div>
                         <div class="mb-3">
                             <label>Harga Satuan</label>
-                            <input type="number" name="harga_satuan" class="form-control" min="0" required>
+                            <input type="number" name="harga_satuan" class="form-control" min="0" value="20000"
+                                required>
                         </div>
 
                         <div class="row">
                             @php
-                                // Urutan mulai April 2024 ... Maret 2025
-                                $bulanFields = [
-                                    'apr' => 'Apr',
-                                    'mei' => 'Mei',
-                                    'jun' => 'Jun',
-                                    'jul' => 'Jul',
-                                    'agu' => 'Agu',
-                                    'sep' => 'Sep',
-                                    'okt' => 'Okt',
-                                    'nov' => 'Nov',
-                                    'des' => 'Des',
-                                    'jan' => 'Jan',
-                                    'feb' => 'Feb',
-                                    'mar' => 'Mar',
+                                // Default data dari Tabel 4.1
+                                $bulanDefaults = [
+                                    'apr' => 174,
+                                    'mei' => 156,
+                                    'jun' => 192,
+                                    'jul' => 200,
+                                    'agu' => 204,
+                                    'sep' => 186,
+                                    'okt' => 184,
+                                    'nov' => 202,
+                                    'des' => 258,
+                                    'jan' => 326,
+                                    'feb' => 238,
+                                    'mar' => 199,
                                 ];
                             @endphp
 
-                            @foreach ($bulanFields as $field => $label)
+                            @foreach ($bulanDefaults as $field => $val)
                                 <div class="col-6 col-md-4 mb-3">
-                                    <label>{{ $label }}</label>
+                                    <label>{{ ucfirst($field) }}</label>
                                     <input type="number" name="{{ $field }}" class="form-control"
-                                        min="0" value="0">
+                                        min="0" value="{{ $val }}">
                                 </div>
                             @endforeach
                         </div>
@@ -236,6 +236,7 @@
             </form>
         </div>
     </div>
+
 
     {{-- DataTables --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
