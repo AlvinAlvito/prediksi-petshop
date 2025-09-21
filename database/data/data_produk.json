@@ -1,0 +1,1152 @@
+[
+  {
+    "No": 1,
+    "nama_produk": "Beras Makmur Jaya 5kg",
+    "jan": 48,
+    "feb": 49,
+    "mar": 53,
+    "apr": 51,
+    "mei": 45,
+    "jun": 40
+  },
+  {
+    "No": 2,
+    "nama_produk": "Beras Makmur Jaya 10kg",
+    "jan": 34,
+    "feb": 27,
+    "mar": 35,
+    "apr": 37,
+    "mei": 43,
+    "jun": 55
+  },
+  {
+    "No": 3,
+    "nama_produk": "Beras Makmur Jaya 30kg",
+    "jan": 5,
+    "feb": 3,
+    "mar": 6,
+    "apr": 4,
+    "mei": 2,
+    "jun": 5
+  },
+  {
+    "No": 4,
+    "nama_produk": "Beras Salam 5kg ",
+    "jan": 40,
+    "feb": 38,
+    "mar": 35,
+    "apr": 43,
+    "mei": 40,
+    "jun": 46
+  },
+  {
+    "No": 5,
+    "nama_produk": "Beras Salam 10kg",
+    "jan": 38,
+    "feb": 36,
+    "mar": 30,
+    "apr": 35,
+    "mei": 34,
+    "jun": 35
+  },
+  {
+    "No": 6,
+    "nama_produk": "Beras Salam 15kg",
+    "jan": 15,
+    "feb": 10,
+    "mar": 7,
+    "apr": 10,
+    "mei": 15,
+    "jun": 8
+  },
+  {
+    "No": 7,
+    "nama_produk": "Beras Salam 30kg",
+    "jan": 7,
+    "feb": 5,
+    "mar": 7,
+    "apr": 4,
+    "mei": 6,
+    "jun": 3
+  },
+  {
+    "No": 8,
+    "nama_produk": "Beras Jambu Madu 5kg",
+    "jan": 30,
+    "feb": 33,
+    "mar": 31,
+    "apr": 35,
+    "mei": 32,
+    "jun": 30
+  },
+  {
+    "No": 9,
+    "nama_produk": "Beras Jambu Madu 10kg",
+    "jan": 27,
+    "feb": 25,
+    "mar": 22,
+    "apr": 20,
+    "mei": 24,
+    "jun": 28
+  },
+  {
+    "No": 10,
+    "nama_produk": "Beras Jambu Madu 30kg",
+    "jan": 5,
+    "feb": 7,
+    "mar": 4,
+    "apr": 6,
+    "mei": 3,
+    "jun": 5
+  },
+  {
+    "No": 11,
+    "nama_produk": "Beras Salmon 5kg",
+    "jan": 45,
+    "feb": 48,
+    "mar": 40,
+    "apr": 43,
+    "mei": 47,
+    "jun": 45
+  },
+  {
+    "No": 12,
+    "nama_produk": "Beras SPHP 5kg",
+    "jan": 50,
+    "feb": 55,
+    "mar": 60,
+    "apr": 50,
+    "mei": 53,
+    "jun": 51
+  },
+  {
+    "No": 13,
+    "nama_produk": "Indomie Goreng Original",
+    "jan": 84,
+    "feb": 80,
+    "mar": 75,
+    "apr": 121,
+    "mei": 87,
+    "jun": 78
+  },
+  {
+    "No": 14,
+    "nama_produk": "Indomie Goreng Rendang",
+    "jan": 124,
+    "feb": 105,
+    "mar": 96,
+    "apr": 80,
+    "mei": 87,
+    "jun": 85
+  },
+  {
+    "No": 15,
+    "nama_produk": "Indomie Goreng Rendang Jumbo",
+    "jan": 45,
+    "feb": 43,
+    "mar": 40,
+    "apr": 37,
+    "mei": 40,
+    "jun": 43
+  },
+  {
+    "No": 16,
+    "nama_produk": "Indomie Ayam Bawang",
+    "jan": 78,
+    "feb": 76,
+    "mar": 83,
+    "apr": 80,
+    "mei": 77,
+    "jun": 79
+  },
+  {
+    "No": 17,
+    "nama_produk": "Indomie Soto Spesial",
+    "jan": 97,
+    "feb": 94,
+    "mar": 98,
+    "apr": 102,
+    "mei": 102,
+    "jun": 99
+  },
+  {
+    "No": 18,
+    "nama_produk": "Indomie Soto Mie",
+    "jan": 92,
+    "feb": 90,
+    "mar": 94,
+    "apr": 94,
+    "mei": 89,
+    "jun": 92
+  },
+  {
+    "No": 19,
+    "nama_produk": "Indomie Kaldu Ayam",
+    "jan": 92,
+    "feb": 88,
+    "mar": 94,
+    "apr": 92,
+    "mei": 88,
+    "jun": 91
+  },
+  {
+    "No": 20,
+    "nama_produk": "Indomie Ayam Spesial",
+    "jan": 72,
+    "feb": 76,
+    "mar": 72,
+    "apr": 75,
+    "mei": 67,
+    "jun": 77
+  },
+  {
+    "No": 23,
+    "nama_produk": "Indomie Ayam Spesial",
+    "jan": 98,
+    "feb": 102,
+    "mar": 95,
+    "apr": 99,
+    "mei": 96,
+    "jun": 101
+  },
+  {
+    "No": 24,
+    "nama_produk": "Indomie Geprek",
+    "jan": 42,
+    "feb": 41,
+    "mar": 39,
+    "apr": 43,
+    "mei": 41,
+    "jun": 45
+  },
+  {
+    "No": 25,
+    "nama_produk": "Indomie Seblak Hot Jeletot",
+    "jan": 78,
+    "feb": 74,
+    "mar": 76,
+    "apr": 81,
+    "mei": 74,
+    "jun": 82
+  },
+  {
+    "No": 26,
+    "nama_produk": "Indomie Korean Spicy",
+    "jan": 48,
+    "feb": 52,
+    "mar": 47,
+    "apr": 44,
+    "mei": 46,
+    "jun": 49
+  },
+  {
+    "No": 27,
+    "nama_produk": "Sarimi isi 2",
+    "jan": 83,
+    "feb": 85,
+    "mar": 80,
+    "apr": 78,
+    "mei": 81,
+    "jun": 79
+  },
+  {
+    "No": 28,
+    "nama_produk": "Sarimi original",
+    "jan": 79,
+    "feb": 77,
+    "mar": 75,
+    "apr": 79,
+    "mei": 79,
+    "jun": 83
+  },
+  {
+    "No": 29,
+    "nama_produk": "Mie sukses isi 2 ayam kecap",
+    "jan": 43,
+    "feb": 43,
+    "mar": 39,
+    "apr": 47,
+    "mei": 39,
+    "jun": 47
+  },
+  {
+    "No": 30,
+    "nama_produk": "Mie sukses isi 2",
+    "jan": 75,
+    "feb": 77,
+    "mar": 76,
+    "apr": 78,
+    "mei": 77,
+    "jun": 74
+  },
+  {
+    "No": 31,
+    "nama_produk": "Mie Sedaap Goreng ",
+    "jan": 55,
+    "feb": 51,
+    "mar": 54,
+    "apr": 57,
+    "mei": 59,
+    "jun": 58
+  },
+  {
+    "No": 32,
+    "nama_produk": "Mie Sedaap Soto",
+    "jan": 99,
+    "feb": 102,
+    "mar": 94,
+    "apr": 102,
+    "mei": 100,
+    "jun": 102
+  },
+  {
+    "No": 33,
+    "nama_produk": "Mie Sedaap Ayam Bawang",
+    "jan": 63,
+    "feb": 58,
+    "mar": 65,
+    "apr": 65,
+    "mei": 68,
+    "jun": 60
+  },
+  {
+    "No": 34,
+    "nama_produk": "Mie Sedaap Kari Spesial",
+    "jan": 56,
+    "feb": 58,
+    "mar": 53,
+    "apr": 53,
+    "mei": 51,
+    "jun": 61
+  },
+  {
+    "No": 35,
+    "nama_produk": "Mie Sedaap Kari Ayam",
+    "jan": 44,
+    "feb": 48,
+    "mar": 45,
+    "apr": 48,
+    "mei": 47,
+    "jun": 45
+  },
+  {
+    "No": 36,
+    "nama_produk": "Mie Sedaap Baso Spesial",
+    "jan": 48,
+    "feb": 50,
+    "mar": 44,
+    "apr": 43,
+    "mei": 49,
+    "jun": 49
+  },
+  {
+    "No": 37,
+    "nama_produk": "Mie Sedaap Selection Korean Spicy Chicken",
+    "jan": 63,
+    "feb": 62,
+    "mar": 60,
+    "apr": 65,
+    "mei": 63,
+    "jun": 68
+  },
+  {
+    "No": 38,
+    "nama_produk": "Mie Sedaap Selection Korean Spicy Soup",
+    "jan": 74,
+    "feb": 69,
+    "mar": 71,
+    "apr": 73,
+    "mei": 71,
+    "jun": 69
+  },
+  {
+    "No": 39,
+    "nama_produk": "Mie Sedaap Selection Singapore Spicy Laksa",
+    "jan": 44,
+    "feb": 48,
+    "mar": 45,
+    "apr": 45,
+    "mei": 49,
+    "jun": 47
+  },
+  {
+    "No": 40,
+    "nama_produk": "Mie Sedaap Nikmat HQQ Ayam Bakar Limau",
+    "jan": 54,
+    "feb": 58,
+    "mar": 58,
+    "apr": 51,
+    "mei": 55,
+    "jun": 49
+  },
+  {
+    "No": 41,
+    "nama_produk": "Mie gaga 100 Extra Pedas Kuah Soto",
+    "jan": 91,
+    "feb": 89,
+    "mar": 90,
+    "apr": 92,
+    "mei": 92,
+    "jun": 96
+  },
+  {
+    "No": 42,
+    "nama_produk": "Mie Gaga 100 Extra Pedas Kuah Jalapeno",
+    "jan": 68,
+    "feb": 66,
+    "mar": 69,
+    "apr": 73,
+    "mei": 65,
+    "jun": 68
+  },
+  {
+    "No": 43,
+    "nama_produk": "Mie Gaga 100 Extra Pedas Goreng Jalapeno",
+    "jan": 67,
+    "feb": 63,
+    "mar": 71,
+    "apr": 70,
+    "mei": 66,
+    "jun": 67
+  },
+  {
+    "No": 44,
+    "nama_produk": "Mie Gaga 100 Extra Pedas ",
+    "jan": 67,
+    "feb": 65,
+    "mar": 72,
+    "apr": 71,
+    "mei": 68,
+    "jun": 70
+  },
+  {
+    "No": 45,
+    "nama_produk": "Mie Gaga 100 Extra Pedas Kuah Soto",
+    "jan": 78,
+    "feb": 73,
+    "mar": 73,
+    "apr": 81,
+    "mei": 83,
+    "jun": 81
+  },
+  {
+    "No": 46,
+    "nama_produk": "Intermi Rasa Kaldu Ayam",
+    "jan": 32,
+    "feb": 35,
+    "mar": 29,
+    "apr": 33,
+    "mei": 32,
+    "jun": 34
+  },
+  {
+    "No": 47,
+    "nama_produk": "Intermi Mi Goreng",
+    "jan": 46,
+    "feb": 49,
+    "mar": 45,
+    "apr": 41,
+    "mei": 43,
+    "jun": 50
+  },
+  {
+    "No": 48,
+    "nama_produk": "Wow Spageti Carbonara",
+    "jan": 43,
+    "feb": 48,
+    "mar": 43,
+    "apr": 45,
+    "mei": 46,
+    "jun": 41
+  },
+  {
+    "No": 49,
+    "nama_produk": "Wow Spageti Bolognese",
+    "jan": 31,
+    "feb": 32,
+    "mar": 27,
+    "apr": 28,
+    "mei": 26,
+    "jun": 30
+  },
+  {
+    "No": 50,
+    "nama_produk": "Wow Spageti Aglio Olio",
+    "jan": 36,
+    "feb": 41,
+    "mar": 31,
+    "apr": 32,
+    "mei": 32,
+    "jun": 36
+  },
+  {
+    "No": 51,
+    "nama_produk": "Minyak Kita 1L",
+    "jan": 42,
+    "feb": 41,
+    "mar": 37,
+    "apr": 37,
+    "mei": 39,
+    "jun": 38
+  },
+  {
+    "No": 52,
+    "nama_produk": "Minyak Kita 2L",
+    "jan": 45,
+    "feb": 45,
+    "mar": 46,
+    "apr": 43,
+    "mei": 46,
+    "jun": 50
+  },
+  {
+    "No": 53,
+    "nama_produk": "Bimoli 1L",
+    "jan": 36,
+    "feb": 36,
+    "mar": 38,
+    "apr": 35,
+    "mei": 34,
+    "jun": 32
+  },
+  {
+    "No": 54,
+    "nama_produk": "Bimoli 2L",
+    "jan": 25,
+    "feb": 25,
+    "mar": 30,
+    "apr": 20,
+    "mei": 28,
+    "jun": 30
+  },
+  {
+    "No": 55,
+    "nama_produk": "Sunco 1L",
+    "jan": 25,
+    "feb": 22,
+    "mar": 23,
+    "apr": 30,
+    "mei": 23,
+    "jun": 22
+  },
+  {
+    "No": 56,
+    "nama_produk": "Sunco 2L",
+    "jan": 45,
+    "feb": 42,
+    "mar": 42,
+    "apr": 43,
+    "mei": 46,
+    "jun": 43
+  },
+  {
+    "No": 57,
+    "nama_produk": "Teh Bendera Tubruk",
+    "jan": 62,
+    "feb": 64,
+    "mar": 63,
+    "apr": 58,
+    "mei": 64,
+    "jun": 57
+  },
+  {
+    "No": 58,
+    "nama_produk": "Teh Bendera Celup",
+    "jan": 40,
+    "feb": 43,
+    "mar": 43,
+    "apr": 36,
+    "mei": 41,
+    "jun": 44
+  },
+  {
+    "No": 59,
+    "nama_produk": "Teh Celup Sari Murni Sachet",
+    "jan": 64,
+    "feb": 65,
+    "mar": 68,
+    "apr": 67,
+    "mei": 62,
+    "jun": 59
+  },
+  {
+    "No": 60,
+    "nama_produk": "Teh Celup Sari Murni Kotak",
+    "jan": 31,
+    "feb": 26,
+    "mar": 30,
+    "apr": 30,
+    "mei": 36,
+    "jun": 32
+  },
+  {
+    "No": 61,
+    "nama_produk": "Teh Celup Sari Wangi Sachet",
+    "jan": 38,
+    "feb": 41,
+    "mar": 35,
+    "apr": 35,
+    "mei": 35,
+    "jun": 36
+  },
+  {
+    "No": 62,
+    "nama_produk": "Teh Celup Sari Wangi Kotak",
+    "jan": 53,
+    "feb": 53,
+    "mar": 55,
+    "apr": 48,
+    "mei": 55,
+    "jun": 51
+  },
+  {
+    "No": 63,
+    "nama_produk": "Teh Celup Prendjak",
+    "jan": 40,
+    "feb": 35,
+    "mar": 42,
+    "apr": 38,
+    "mei": 40,
+    "jun": 42
+  },
+  {
+    "No": 64,
+    "nama_produk": "Gula 1kg",
+    "jan": 69,
+    "feb": 66,
+    "mar": 72,
+    "apr": 66,
+    "mei": 72,
+    "jun": 65
+  },
+  {
+    "No": 65,
+    "nama_produk": "Gula ½ kg",
+    "jan": 95,
+    "feb": 91,
+    "mar": 91,
+    "apr": 95,
+    "mei": 92,
+    "jun": 98
+  },
+  {
+    "No": 66,
+    "nama_produk": "Gula ¼ kg",
+    "jan": 85,
+    "feb": 80,
+    "mar": 83,
+    "apr": 80,
+    "mei": 84,
+    "jun": 83
+  },
+  {
+    "No": 67,
+    "nama_produk": "Garam Dolphin",
+    "jan": 57,
+    "feb": 58,
+    "mar": 54,
+    "apr": 52,
+    "mei": 52,
+    "jun": 62
+  },
+  {
+    "No": 68,
+    "nama_produk": "Garam Biasa",
+    "jan": 71,
+    "feb": 72,
+    "mar": 71,
+    "apr": 71,
+    "mei": 71,
+    "jun": 68
+  },
+  {
+    "No": 69,
+    "nama_produk": "Susu Bendera Kental Manis Sachet",
+    "jan": 32,
+    "feb": 37,
+    "mar": 37,
+    "apr": 28,
+    "mei": 31,
+    "jun": 27
+  },
+  {
+    "No": 70,
+    "nama_produk": "Susu Bendera Cokelat Sachet",
+    "jan": 52,
+    "feb": 47,
+    "mar": 51,
+    "apr": 49,
+    "mei": 50,
+    "jun": 49
+  },
+  {
+    "No": 71,
+    "nama_produk": "Susu Bendera Kental Manis 370gr (kaleng)",
+    "jan": 41,
+    "feb": 40,
+    "mar": 41,
+    "apr": 38,
+    "mei": 44,
+    "jun": 40
+  },
+  {
+    "No": 72,
+    "nama_produk": "Susu Bendera Cokelat 370gr (kaleng)",
+    "jan": 48,
+    "feb": 43,
+    "mar": 47,
+    "apr": 45,
+    "mei": 43,
+    "jun": 46
+  },
+  {
+    "No": 73,
+    "nama_produk": "Susu Bendera Full Cream Gold 370gr (kaleng)",
+    "jan": 45,
+    "feb": 46,
+    "mar": 40,
+    "apr": 42,
+    "mei": 41,
+    "jun": 48
+  },
+  {
+    "No": 74,
+    "nama_produk": "Susu Bendera Kental Manis Pouch",
+    "jan": 66,
+    "feb": 66,
+    "mar": 70,
+    "apr": 63,
+    "mei": 68,
+    "jun": 68
+  },
+  {
+    "No": 75,
+    "nama_produk": "Susu Bendera Cokelat Pouch",
+    "jan": 56,
+    "feb": 56,
+    "mar": 57,
+    "apr": 52,
+    "mei": 61,
+    "jun": 60
+  },
+  {
+    "No": 76,
+    "nama_produk": "Susu Tiga Sapi Sachet",
+    "jan": 26,
+    "feb": 30,
+    "mar": 21,
+    "apr": 28,
+    "mei": 21,
+    "jun": 29
+  },
+  {
+    "No": 77,
+    "nama_produk": "Susu Tiga Sapi 490g (Kaleng)",
+    "jan": 67,
+    "feb": 67,
+    "mar": 68,
+    "apr": 71,
+    "mei": 68,
+    "jun": 71
+  },
+  {
+    "No": 78,
+    "nama_produk": "Susu Nestle 365g Carnation",
+    "jan": 59,
+    "feb": 55,
+    "mar": 62,
+    "apr": 61,
+    "mei": 63,
+    "jun": 60
+  },
+  {
+    "No": 79,
+    "nama_produk": "Tepung Terigu Dragonfly 1kg",
+    "jan": 75,
+    "feb": 73,
+    "mar": 70,
+    "apr": 77,
+    "mei": 72,
+    "jun": 76
+  },
+  {
+    "No": 80,
+    "nama_produk": "Tepung Terigu Dragonfly ½ kg",
+    "jan": 54,
+    "feb": 50,
+    "mar": 50,
+    "apr": 55,
+    "mei": 54,
+    "jun": 51
+  },
+  {
+    "No": 81,
+    "nama_produk": "Tepung Segitiga Biru",
+    "jan": 64,
+    "feb": 68,
+    "mar": 64,
+    "apr": 68,
+    "mei": 68,
+    "jun": 64
+  },
+  {
+    "No": 82,
+    "nama_produk": "Tepung  Cakra Kembar",
+    "jan": 45,
+    "feb": 45,
+    "mar": 50,
+    "apr": 44,
+    "mei": 40,
+    "jun": 47
+  },
+  {
+    "No": 83,
+    "nama_produk": "Tepung Kunci Biru",
+    "jan": 44,
+    "feb": 45,
+    "mar": 42,
+    "apr": 44,
+    "mei": 42,
+    "jun": 41
+  },
+  {
+    "No": 84,
+    "nama_produk": "Tepung Beras Rose Brand",
+    "jan": 79,
+    "feb": 77,
+    "mar": 75,
+    "apr": 83,
+    "mei": 76,
+    "jun": 74
+  },
+  {
+    "No": 85,
+    "nama_produk": "Tepung Pulut Rose Brand",
+    "jan": 58,
+    "feb": 62,
+    "mar": 59,
+    "apr": 62,
+    "mei": 57,
+    "jun": 62
+  },
+  {
+    "No": 86,
+    "nama_produk": "Tepung Maizena",
+    "jan": 62,
+    "feb": 65,
+    "mar": 61,
+    "apr": 57,
+    "mei": 66,
+    "jun": 66
+  },
+  {
+    "No": 87,
+    "nama_produk": "Tepung Kanji 1kg",
+    "jan": 40,
+    "feb": 36,
+    "mar": 40,
+    "apr": 43,
+    "mei": 42,
+    "jun": 39
+  },
+  {
+    "No": 88,
+    "nama_produk": "Tepung Kanji ½ kg",
+    "jan": 40,
+    "feb": 41,
+    "mar": 39,
+    "apr": 40,
+    "mei": 41,
+    "jun": 37
+  },
+  {
+    "No": 89,
+    "nama_produk": "Tepung Kanji ¼ kg",
+    "jan": 51,
+    "feb": 55,
+    "mar": 48,
+    "apr": 50,
+    "mei": 51,
+    "jun": 54
+  },
+  {
+    "No": 90,
+    "nama_produk": "Tepung Sagu 1kg",
+    "jan": 68,
+    "feb": 67,
+    "mar": 63,
+    "apr": 66,
+    "mei": 67,
+    "jun": 72
+  },
+  {
+    "No": 91,
+    "nama_produk": "Tepung Sagu ½ kg",
+    "jan": 65,
+    "feb": 64,
+    "mar": 66,
+    "apr": 63,
+    "mei": 60,
+    "jun": 64
+  },
+  {
+    "No": 92,
+    "nama_produk": "Tepung Sagu ¼ kg",
+    "jan": 62,
+    "feb": 66,
+    "mar": 66,
+    "apr": 62,
+    "mei": 61,
+    "jun": 60
+  },
+  {
+    "No": 93,
+    "nama_produk": "Sajiku Tepung Serbaguna 220g",
+    "jan": 73,
+    "feb": 71,
+    "mar": 77,
+    "apr": 77,
+    "mei": 70,
+    "jun": 77
+  },
+  {
+    "No": 94,
+    "nama_produk": "Sajiku Tepung Serbaguna 900g",
+    "jan": 71,
+    "feb": 66,
+    "mar": 73,
+    "apr": 70,
+    "mei": 69,
+    "jun": 73
+  },
+  {
+    "No": 95,
+    "nama_produk": "Kecap Bangau Sachet",
+    "jan": 35,
+    "feb": 36,
+    "mar": 31,
+    "apr": 30,
+    "mei": 40,
+    "jun": 33
+  },
+  {
+    "No": 96,
+    "nama_produk": "Kecap Bangau 280ml",
+    "jan": 43,
+    "feb": 39,
+    "mar": 40,
+    "apr": 38,
+    "mei": 38,
+    "jun": 40
+  },
+  {
+    "No": 97,
+    "nama_produk": "Kecap Bangau 380ml",
+    "jan": 30,
+    "feb": 29,
+    "mar": 27,
+    "apr": 25,
+    "mei": 25,
+    "jun": 32
+  },
+  {
+    "No": 98,
+    "nama_produk": "Kecap Bangau 700ml",
+    "jan": 29,
+    "feb": 34,
+    "mar": 25,
+    "apr": 26,
+    "mei": 25,
+    "jun": 26
+  },
+  {
+    "No": 99,
+    "nama_produk": "Kecap Bangau 950ml",
+    "jan": 42,
+    "feb": 37,
+    "mar": 46,
+    "apr": 44,
+    "mei": 46,
+    "jun": 46
+  },
+  {
+    "No": 100,
+    "nama_produk": "Kecap Sedaap Sachet",
+    "jan": 45,
+    "feb": 41,
+    "mar": 42,
+    "apr": 48,
+    "mei": 46,
+    "jun": 43
+  },
+  {
+    "No": 101,
+    "nama_produk": "Kecap Sedaap 280ml",
+    "jan": 45,
+    "feb": 44,
+    "mar": 41,
+    "apr": 50,
+    "mei": 47,
+    "jun": 43
+  },
+  {
+    "No": 102,
+    "nama_produk": "Kecap Sedaap 725ml",
+    "jan": 44,
+    "feb": 43,
+    "mar": 47,
+    "apr": 42,
+    "mei": 48,
+    "jun": 43
+  },
+  {
+    "No": 103,
+    "nama_produk": "Kecap Indofood 520ml",
+    "jan": 28,
+    "feb": 30,
+    "mar": 25,
+    "apr": 23,
+    "mei": 25,
+    "jun": 26
+  },
+  {
+    "No": 104,
+    "nama_produk": "Saos  Indofood Sambal Bangkok 335ml ",
+    "jan": 37,
+    "feb": 32,
+    "mar": 38,
+    "apr": 39,
+    "mei": 38,
+    "jun": 36
+  },
+  {
+    "No": 105,
+    "nama_produk": "Saos  Indofood Pedas Manis 135ml",
+    "jan": 31,
+    "feb": 26,
+    "mar": 32,
+    "apr": 32,
+    "mei": 34,
+    "jun": 28
+  },
+  {
+    "No": 106,
+    "nama_produk": "Saos  Indofood Tomat 135ml",
+    "jan": 28,
+    "feb": 23,
+    "mar": 23,
+    "apr": 26,
+    "mei": 31,
+    "jun": 28
+  },
+  {
+    "No": 107,
+    "nama_produk": "Saos  Indofood Tomat 275ml",
+    "jan": 32,
+    "feb": 37,
+    "mar": 29,
+    "apr": 27,
+    "mei": 30,
+    "jun": 35
+  },
+  {
+    "No": 108,
+    "nama_produk": "Saos  Indofood Pedas 135ml",
+    "jan": 38,
+    "feb": 41,
+    "mar": 39,
+    "apr": 36,
+    "mei": 35,
+    "jun": 42
+  },
+  {
+    "No": 109,
+    "nama_produk": "Saos  Indofood Pedas 335ml",
+    "jan": 34,
+    "feb": 33,
+    "mar": 33,
+    "apr": 31,
+    "mei": 37,
+    "jun": 32
+  },
+  {
+    "No": 110,
+    "nama_produk": "Saos  Indofood Extra Pedas 135ml",
+    "jan": 46,
+    "feb": 45,
+    "mar": 44,
+    "apr": 45,
+    "mei": 47,
+    "jun": 49
+  },
+  {
+    "No": 111,
+    "nama_produk": "Saos  Indofood Extra Pedas 275ml",
+    "jan": 26,
+    "feb": 25,
+    "mar": 30,
+    "apr": 30,
+    "mei": 27,
+    "jun": 30
+  },
+  {
+    "No": 112,
+    "nama_produk": "Saos Dua Ikan",
+    "jan": 24,
+    "feb": 21,
+    "mar": 25,
+    "apr": 29,
+    "mei": 29,
+    "jun": 20
+  },
+  {
+    "No": 113,
+    "nama_produk": "Saos Sambal Sasa Sachet",
+    "jan": 34,
+    "feb": 37,
+    "mar": 38,
+    "apr": 38,
+    "mei": 29,
+    "jun": 34
+  },
+  {
+    "No": 114,
+    "nama_produk": "Saos Dena",
+    "jan": 26,
+    "feb": 28,
+    "mar": 30,
+    "apr": 29,
+    "mei": 22,
+    "jun": 31
+  },
+  {
+    "No": 115,
+    "nama_produk": "Kerupuk Udang Larissa",
+    "jan": 35,
+    "feb": 31,
+    "mar": 34,
+    "apr": 34,
+    "mei": 35,
+    "jun": 32
+  },
+  {
+    "No": 116,
+    "nama_produk": "Kerupuk Merah Putih",
+    "jan": 17,
+    "feb": 12,
+    "mar": 17,
+    "apr": 15,
+    "mei": 12,
+    "jun": 18
+  },
+  {
+    "No": 117,
+    "nama_produk": "Kerupuk Ubi",
+    "jan": 34,
+    "feb": 32,
+    "mar": 32,
+    "apr": 34,
+    "mei": 31,
+    "jun": 34
+  }
+]
