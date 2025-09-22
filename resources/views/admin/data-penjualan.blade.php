@@ -66,7 +66,8 @@
 
                         <tbody>
                             @forelse ($penjualan as $item)
-                                <tr>
+                                <tr onclick="window.location='{{ route('fts.semesta', ['id' => $item->id]) }}'"
+                                    style="cursor:pointer;">
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->nama_produk }}</td>
                                     <td>{{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
@@ -82,16 +83,17 @@
                                     <td>{{ $item->jan }}</td>
                                     <td>{{ $item->feb }}</td>
                                     <td>{{ $item->mar }}</td>
-
                                     <td class="d-flex gap-2">
                                         <!-- Edit -->
                                         <button class="btn btn-link text-primary p-0 m-0" data-bs-toggle="modal"
-                                            data-bs-target="#modalEdit{{ $item->id }}">
+                                            data-bs-target="#modalEdit{{ $item->id }}"
+                                            onclick="event.stopPropagation()">
                                             <i class="uil uil-edit"></i>
                                         </button>
                                         <!-- Hapus -->
                                         <form action="{{ route('penjualan.destroy', $item->id) }}" method="POST"
-                                            onsubmit="return confirm('Yakin hapus data ini?')">
+                                            onsubmit="return confirm('Yakin hapus data ini?')"
+                                            onclick="event.stopPropagation()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-link text-danger p-0 m-0">
@@ -106,6 +108,7 @@
                                 </tr>
                             @endforelse
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -191,12 +194,13 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label>Nama Produk</label>
-                            <input type="text" name="nama_produk" class="form-control" value="Cat Choize Adult" required>
+                            <input type="text" name="nama_produk" class="form-control" value="Cat Choize Adult"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label>Harga Satuan</label>
-                            <input type="number" name="harga_satuan" class="form-control" min="0" value="20000"
-                                required>
+                            <input type="number" name="harga_satuan" class="form-control" min="0"
+                                value="20000" required>
                         </div>
 
                         <div class="row">
