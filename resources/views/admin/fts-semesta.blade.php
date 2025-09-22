@@ -342,136 +342,255 @@
                         @if ($markov)
                             <div class="col-6">
                                 <div class="card mt-4">
-                                <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 8</span>
-                                    Matriks Probabilitas Transisi Markov (R) — Pecahan</div>
-                                <div class="card-body">
-                                    @php
-                                        $states = [];
-                                        for ($i = 1; $i <= ($iset->k_interval ?? 0); $i++) {
-                                            $states[] = 'A' . $i;
-                                        }
+                                    <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 8</span>
+                                        Matriks Probabilitas Transisi Markov (R) — Pecahan</div>
+                                    <div class="card-body">
+                                        @php
+                                            $states = [];
+                                            for ($i = 1; $i <= ($iset->k_interval ?? 0); $i++) {
+                                                $states[] = 'A' . $i;
+                                            }
 
-                                        // Bentuk grid [row_state][col_state] => cell
-                                        $grid = [];
-                                        foreach ($markovCells as $c) {
-                                            $grid[$c->row_state][$c->col_state] = $c;
-                                        }
-                                    @endphp
+                                            // Bentuk grid [row_state][col_state] => cell
+                                            $grid = [];
+                                            foreach ($markovCells as $c) {
+                                                $grid[$c->row_state][$c->col_state] = $c;
+                                            }
+                                        @endphp
 
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered align-middle text-center">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>R</th>
-                                                    @foreach ($states as $cs)
-                                                        <th>{{ $cs }}</th>
-                                                    @endforeach
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($states as $rs)
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered align-middle text-center">
+                                                <thead class="table-light">
                                                     <tr>
-                                                        <th class="table-light">{{ $rs }}</th>
+                                                        <th>R</th>
                                                         @foreach ($states as $cs)
-                                                            @php
-                                                                $cell = $grid[$rs][$cs] ?? null;
-                                                                $num = $cell?->freq ?? 0;
-                                                                $den = $cell?->row_total ?? 0;
-                                                                $txt = $den > 0 ? $num . ' / ' . $den : '0';
-                                                            @endphp
-                                                            <td>{{ $txt }}</td>
+                                                            <th>{{ $cs }}</th>
                                                         @endforeach
                                                     </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($states as $rs)
+                                                        <tr>
+                                                            <th class="table-light">{{ $rs }}</th>
+                                                            @foreach ($states as $cs)
+                                                                @php
+                                                                    $cell = $grid[$rs][$cs] ?? null;
+                                                                    $num = $cell?->freq ?? 0;
+                                                                    $den = $cell?->row_total ?? 0;
+                                                                    $txt = $den > 0 ? $num . ' / ' . $den : '0';
+                                                                @endphp
+                                                                <td>{{ $txt }}</td>
+                                                            @endforeach
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <small class="text-muted">Baris tanpa transisi keluar (total=0) ditampilkan sebagai
+                                            0.</small>
                                     </div>
-                                    <small class="text-muted">Baris tanpa transisi keluar (total=0) ditampilkan sebagai
-                                        0.</small>
                                 </div>
-                            </div>
                             </div>
 
-                           <div class="col-6">
-                             <div class="card mt-3">
-                                <div class="card-header fw-bold">Matriks Probabilitas Transisi Markov (R) — Desimal</div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered align-middle text-center">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>R</th>
-                                                    @foreach ($states as $cs)
-                                                        <th>{{ $cs }}</th>
-                                                    @endforeach
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($states as $rs)
+                            <div class="col-6">
+                                <div class="card mt-3">
+                                    <div class="card-header fw-bold">Matriks Probabilitas Transisi Markov (R) — Desimal
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered align-middle text-center">
+                                                <thead class="table-light">
                                                     <tr>
-                                                        <th class="table-light">{{ $rs }}</th>
+                                                        <th>R</th>
                                                         @foreach ($states as $cs)
-                                                            @php
-                                                                $cell = $grid[$rs][$cs] ?? null;
-                                                                $p = $cell?->prob ?? 0;
-                                                            @endphp
-                                                            <td>{{ rtrim(rtrim(number_format($p, 2, '.', ''), '0'), '.') }}
-                                                            </td>
+                                                            <th>{{ $cs }}</th>
                                                         @endforeach
                                                     </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($states as $rs)
+                                                        <tr>
+                                                            <th class="table-light">{{ $rs }}</th>
+                                                            @foreach ($states as $cs)
+                                                                @php
+                                                                    $cell = $grid[$rs][$cs] ?? null;
+                                                                    $p = $cell?->prob ?? 0;
+                                                                @endphp
+                                                                <td>{{ rtrim(rtrim(number_format($p, 2, '.', ''), '0'), '.') }}
+                                                                </td>
+                                                            @endforeach
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <small class="text-muted">Nilai desimal dibulatkan 2 angka seperti contoh (0.5,
+                                            0.25,
+                                            dst).</small>
                                     </div>
-                                    <small class="text-muted">Nilai desimal dibulatkan 2 angka seperti contoh (0.5, 0.25,
-                                        dst).</small>
                                 </div>
                             </div>
-                           </div>
                         @endif
 
                     </div>
 
-                    <div class="col-12">
-                        {{-- HASIL PERAMALAN AWAL F(t) --}}
+                    <div class="row">
+                        <div class="col-6">
+                            {{-- HASIL PERAMALAN AWAL F(t) --}}
+                            @if (!empty($forecasts) && count($forecasts) > 0)
+                                <div class="card mt-4">
+                                    <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 9</span>
+                                        Hasil Peramalan Awal F(t)</div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped align-middle">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Periode</th>
+                                                        <th class="text-end">Data Aktual Y(t)</th>
+                                                        <th class="text-end">Peramalan Awal F(t)</th>
+                                                        <th class="text-center">State (t−1)</th>
+                                                        <th class="text-end">Y(t−1)</th>
+                                                        <th class="text-center">P(baris)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($forecasts as $fc)
+                                                        <tr>
+                                                            <td>{{ $fc->periode_label }}</td>
+                                                            <td class="text-end">
+                                                                {{ number_format($fc->y_actual, 0, ',', '.') }}</td>
+                                                            <td class="text-end">
+                                                                {{ $fc->f_value !== null ? number_format($fc->f_value, 2, '.', '') : '-' }}
+                                                            </td>
+                                                            <td class="text-center">{{ $fc->prev_state ?? '-' }}</td>
+                                                            <td class="text-end">
+                                                                {{ $fc->y_prev !== null ? number_format($fc->y_prev, 0, ',', '.') : '-' }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                @if ($fc->prev_state)
+                                                                    [{{ rtrim(rtrim(number_format($fc->p1, 2, '.', ''), '0'), '.') }},
+                                                                    {{ rtrim(rtrim(number_format($fc->p2, 2, '.', ''), '0'), '.') }},
+                                                                    {{ rtrim(rtrim(number_format($fc->p3, 2, '.', ''), '0'), '.') }},
+                                                                    {{ rtrim(rtrim(number_format($fc->p4, 2, '.', ''), '0'), '.') }},
+                                                                    {{ rtrim(rtrim(number_format($fc->p5, 2, '.', ''), '0'), '.') }}]
+                                                                @else
+                                                                    -
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <small class="text-muted">
+                                            Rumus: untuk baris state A<sub>i</sub> (bulan t−1), F(t) = Y(t−1)·P<sub>ii</sub>
+                                            +
+                                            ∑<sub>j≠i</sub> m<sub>j</sub>·P<sub>ij</sub>.
+                                            Nilai m<sub>j</sub> diambil dari mid-point tiap interval u<sub>j</sub>.
+                                        </small>
+                                    </div>
+                                </div>
+                            @endif
+
+                        </div>
+                        <div class="col-6">
+                            {{-- NILAI PENYESUAIAN (Dt) --}}
+                            @if (!empty($forecasts) && count($forecasts) > 0)
+                                <div class="card mt-3">
+                                    <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 10</span>
+                                        Nilai Penyesuaian (Dt) pada Hasil Peramalan</div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered align-middle">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th style="width:80px;">Periode (t)</th>
+                                                        <th class="text-center">Current state</th>
+                                                        <th class="text-center">Next state</th>
+                                                        <th class="text-end">Data Aktual Y(t)</th>
+                                                        <th class="text-end">Forecast awal F(t)</th>
+                                                        <th class="text-end">Dt</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($forecasts as $i => $fc)
+                                                        <tr>
+                                                            <td>{{ $fc->periode_label }}</td>
+                                                            <td class="text-center">{{ $fc->curr_state ?? '-' }}</td>
+                                                            <td class="text-center">{{ $fc->next_state ?? '-' }}</td>
+                                                            <td class="text-end">
+                                                                {{ number_format($fc->y_actual, 0, ',', '.') }}</td>
+                                                            <td class="text-end">
+                                                                {{ $fc->f_value !== null ? number_format($fc->f_value, 2, '.', '') : '-' }}
+                                                            </td>
+                                                            <td class="text-end">
+                                                                @if ($fc->dt === null)
+                                                                    -
+                                                                @else
+                                                                    {{ number_format($fc->dt, 1, '.', '') }}
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <small class="text-muted">
+                                            Aturan: Dt = (index(A<sub>next</sub>) − index(A<sub>current</sub>)) × (l/2).
+                                            Dengan l = {{ number_format($iset->l_interval, 1, ',', '.') }}, maka l/2 =
+                                            {{ number_format($iset->l_interval / 2, 1, ',', '.') }}.
+                                        </small>
+                                    </div>
+                                </div>
+                            @endif
+
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        {{-- HASIL PERAMALAN AKHIR (F′(t) = F(t) + Dt) --}}
                         @if (!empty($forecasts) && count($forecasts) > 0)
-                            <div class="card mt-4">
-                                <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 9</span> Hasil Peramalan Awal F(t)</div>
+                            <div class="card mt-3">
+                                <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 11</span>
+                                    Hasil Peramalan Akhir</div>
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <table class="table table-striped align-middle">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th >Periode</th>
+                                                    <th style="width:80px;">No</th>
+                                                    <th style="width:120px;">Periode</th>
                                                     <th class="text-end">Data Aktual Y(t)</th>
-                                                    <th class="text-end">Peramalan Awal F(t)</th>
-                                                    <th class="text-center">State (t−1)</th>
-                                                    <th class="text-end">Y(t−1)</th>
-                                                    <th class="text-center">P(baris)</th>
+                                                    <th class="text-end">Forecast Awal F(t)</th>
+                                                    <th class="text-end">Dt</th>
+                                                    <th class="text-end">Forecast Akhir F′(t)</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($forecasts as $fc)
+                                                @foreach ($forecasts as $i => $fc)
                                                     <tr>
-                                                        <td>{{ $fc->periode_label }}</td>
+                                                        <td>{{ $i + 1 }}</td>
+                                                        <td>{{ \Illuminate\Support\Str::of($fc->periode_label)->replace(' ', '-')->replace('2024', '2024')->replace('2025', '2025') }}
+                                                        </td>
                                                         <td class="text-end">
                                                             {{ number_format($fc->y_actual, 0, ',', '.') }}</td>
                                                         <td class="text-end">
                                                             {{ $fc->f_value !== null ? number_format($fc->f_value, 2, '.', '') : '-' }}
                                                         </td>
-                                                        <td class="text-center">{{ $fc->prev_state ?? '-' }}</td>
                                                         <td class="text-end">
-                                                            {{ $fc->y_prev !== null ? number_format($fc->y_prev, 0, ',', '.') : '-' }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            @if ($fc->prev_state)
-                                                                [{{ rtrim(rtrim(number_format($fc->p1, 2, '.', ''), '0'), '.') }},
-                                                                {{ rtrim(rtrim(number_format($fc->p2, 2, '.', ''), '0'), '.') }},
-                                                                {{ rtrim(rtrim(number_format($fc->p3, 2, '.', ''), '0'), '.') }},
-                                                                {{ rtrim(rtrim(number_format($fc->p4, 2, '.', ''), '0'), '.') }},
-                                                                {{ rtrim(rtrim(number_format($fc->p5, 2, '.', ''), '0'), '.') }}]
-                                                            @else
+                                                            @if ($fc->dt === null)
                                                                 -
+                                                            @else
+                                                                {{ number_format($fc->dt, 1, '.', '') }}
+                                                            @endif
+                                                        </td>
+                                                        <td class="text-end">
+                                                            @if ($fc->f_final === null)
+                                                                -
+                                                            @else
+                                                                {{-- tampilkan bulat (≈) sesuai contoh --}}
+                                                                {{ number_format($fc->f_final_round, 0, ',', '.') }}
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -479,17 +598,116 @@
                                             </tbody>
                                         </table>
                                     </div>
-
                                     <small class="text-muted">
-                                        Rumus: untuk baris state A<sub>i</sub> (bulan t−1), F(t) = Y(t−1)·P<sub>ii</sub> +
-                                        ∑<sub>j≠i</sub> m<sub>j</sub>·P<sub>ij</sub>.
-                                        Nilai m<sub>j</sub> diambil dari mid-point tiap interval u<sub>j</sub>.
+                                        F′(t) = F(t) + Dt, kemudian dibulatkan ke bilangan bulat terdekat (contoh: 212,50 →
+                                        213).
                                     </small>
                                 </div>
                             </div>
                         @endif
 
                     </div>
+
+                    <div class="col-6">
+                        {{-- PROSES 12: PERHITUNGAN MAPE --}}
+                        @if (!empty($forecasts) && count($forecasts) > 1)
+                            <div class="card mt-4">
+                                <div class="card-header fw-bold"><span class="btn btn-primary btn-sm">Proses 12</span>
+                                    Perhitungan MAPE (In-sample)</div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th class="text-end">Data Aktual Y(t)</th>
+                                                    <th class="text-end">Peramalan Akhir F′(t)</th>
+                                                    <th class="text-end">| (Y − F′) / Y |</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($forecasts as $r)
+                                                    @if ($r->urut >= 2)
+                                                        <tr>
+                                                            <td class="text-end">
+                                                                {{ number_format($r->y_actual, 0, ',', '.') }}</td>
+                                                            <td class="text-end">
+                                                                {{ number_format($r->f_final_round ?? 0, 0, ',', '.') }}
+                                                            </td>
+                                                            <td class="text-end">
+                                                                {{ $r->ape !== null ? number_format($r->ape, 4, '.', '') : '-' }}
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                @endforeach
+                                            </tbody>
+                                            @if ($mape)
+                                                <tfoot>
+                                                    <tr class="table-light">
+                                                        <th colspan="2" class="text-end">MAPE</th>
+                                                        <th class="text-end">
+                                                            {{ number_format($mape->mape_pct, 2, ',', '.') }}%
+                                                        </th>
+                                                    </tr>
+                                                </tfoot>
+                                            @endif
+                                        </table>
+                                    </div>
+                                    @if ($mape)
+                                        <small class="text-muted">
+                                            MAPE = (Σ APE) / {{ $mape->n_rows }} × 100% =
+                                            {{ rtrim(rtrim(number_format($mape->sum_ape, 4, '.', ''), '0'), '.') }} /
+                                            {{ $mape->n_rows }} × 100%
+                                            = {{ number_format($mape->mape_pct, 4, '.', '') }}%.
+                                        </small>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+
+                    </div>
+                    <div class="col-12">
+                        {{-- HASIL AKHIR: PERAMALAN 7 PERIODE KE DEPAN (Apr–Okt 2025) --}}
+                        @if (!empty($future) && count($future) > 0)
+                            <div class="card mt-3">
+                                <div class="card-header fw-bold">
+                                  <span class="btn btn-primary btn-sm">Hasil Akhir</span>  Peramalan 7 Periode ke Depan (State Saat Ini: A2)
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th style="width:80px;">No</th>
+                                                    <th style="width:140px;">Periode</th>
+                                                    <th class="text-end">Hasil Peramalan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($future as $row)
+                                                    <tr>
+                                                        <td>{{ $row->seq }}</td>
+                                                        <td>{{ $row->periode_label }}</td>
+                                                        <td class="text-end">
+                                                            {{ number_format($row->f_round, 0, ',', '.') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <small class="text-muted">
+                                        Rumus tiap periode menggunakan baris probabilitas state A2:
+                                        F = m₁·P₂₁ + Y<sub>sebelumnya</sub>·P₂₂ + m₃·P₂₃ + m₄·P₂₄ + m₅·P₂₅.
+                                        Nilai Y untuk langkah pertama adalah F′(12) desimal, dan untuk langkah berikutnya
+                                        adalah hasil desimal periode sebelumnya.
+                                    </small>
+                                </div>
+                            </div>
+                        @endif
+
+                    </div>
+
+
+
 
                 </div>
 

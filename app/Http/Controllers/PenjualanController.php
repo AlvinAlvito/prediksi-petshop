@@ -14,6 +14,9 @@ use App\Models\FtsFlrgItem;
 use App\Models\FtsMarkovMatrix;
 use App\Models\FtsMarkovCell;
 use App\Models\FtsForecast;
+use App\Models\FtsMapeSummary;
+use App\Models\FtsFutureForecast;
+
 
 class PenjualanController extends Controller
 {
@@ -158,6 +161,10 @@ class PenjualanController extends Controller
 
         $forecasts = FtsForecast::where('interval_set_id', $set->id)->orderBy('urut')->get();
 
+        $mape = FtsMapeSummary::where('interval_set_id', $set->id)->first();
+        $future = FtsFutureForecast::where('interval_set_id', $set->id)
+            ->orderBy('seq')->get();
+
         return view('admin.fts-semesta', [
             // ...payload lama...
             'produk' => $row->nama_produk,
@@ -173,6 +180,8 @@ class PenjualanController extends Controller
             'markov' => $matrix,
             'markovCells' => $cells,
             'forecasts' => $forecasts,
+            'mape' => $mape,
+            'future' => $future,
         ]);
 
 
@@ -276,6 +285,12 @@ class PenjualanController extends Controller
         $this->computeMarkovMatrix($set);
         $matrix = $this->computeMarkovMatrix($set);
         $this->computeInitialForecasts($universe, $set, $matrix);
+        // 8) Hitung MAPE (in-sample)
+        $this->computeMAPE($set);
+
+        // 9) Peramalan 7 bulan ke depan (Apr–Okt 2025) dengan current state = A2
+        $this->computeFuture7($universe, $set, $matrix);
+
 
 
     }
@@ -516,31 +531,29 @@ class PenjualanController extends Controller
         FtsIntervalSet $set,
         FtsMarkovMatrix $matrix
     ): void {
-        // Ambil data yang diperlukan
-        $fuzzis = FtsFuzzification::where('interval_set_id', $set->id)->orderBy('urut')->get(); // 12 baris
-        $intervals = $set->intervals()->orderBy('urut')->get(); // u1..u5
+        $fuzzis = FtsFuzzification::where('interval_set_id', $set->id)->orderBy('urut')->get();
+        $intervals = $set->intervals()->orderBy('urut')->get();
 
-        // Mid-point m1..m5 (urut u1..u5)
+        // mid-point m1..m5
         $m = [];
         foreach ($intervals as $i => $iv) {
             $m[$i + 1] = (float) $iv->mid_point; // 1-based
         }
 
-        // Probabilitas R: map[row_state]['A1'..'A5'] => prob
+        // Probabilitas R
         $cells = FtsMarkovCell::where('matrix_id', $matrix->id)->get();
-        $P = []; // P['A1']['A1']=...
+        $P = [];
         foreach ($cells as $c) {
             $P[$c->row_state][$c->col_state] = (float) $c->prob;
         }
 
-        // Bersih dulu hasil sebelumnya
+        // bersihkan hasil lama
         FtsForecast::where('interval_set_id', $set->id)->delete();
 
-        // Baris pertama (t=1) tidak punya forecast
         if ($fuzzis->count() === 0)
             return;
 
-        // Simpan t=1 (Apr) tanpa F
+        // t=1: tanpa forecast & Dt
         $first = $fuzzis[0];
         FtsForecast::create([
             'universe_id' => $universe->id,
@@ -552,23 +565,27 @@ class PenjualanController extends Controller
             'y_actual' => (int) $first->nilai,
             'y_prev' => null,
             'prev_state' => null,
+            'curr_state' => null,
+            'next_state' => null,
             'p1' => 0,
             'p2' => 0,
             'p3' => 0,
             'p4' => 0,
             'p5' => 0,
             'f_value' => null,
+            'dt' => null,
         ]);
 
-        // Loop t=2..N
-        for ($i = 1; $i < $fuzzis->count(); $i++) {
-            $prev = $fuzzis[$i - 1];     // t-1
-            $curr = $fuzzis[$i];       // t
+        $halfL = (float) $set->l_interval / 2.0; // 34.8 / 2 = 17.4
 
-            $rowState = $prev->fuzzy_kode;  // A1..A5
+        // t=2..N
+        for ($i = 1; $i < $fuzzis->count(); $i++) {
+            $prev = $fuzzis[$i - 1];   // t-1
+            $curr = $fuzzis[$i];     // t
+
+            $rowState = $prev->fuzzy_kode; // current state (t-1) → baris R
             $yPrev = (float) $prev->nilai;
 
-            // Ambil baris probabilitas P(rowState, *)
             $p = [
                 1 => (float) ($P[$rowState]['A1'] ?? 0.0),
                 2 => (float) ($P[$rowState]['A2'] ?? 0.0),
@@ -577,10 +594,10 @@ class PenjualanController extends Controller
                 5 => (float) ($P[$rowState]['A5'] ?? 0.0),
             ];
 
-            // Index state: 'A3' -> 3
-            $iState = (int) str_replace('A', '', $rowState);
+            $iState = (int) str_replace('A', '', $rowState);          // index current
+            $jState = (int) str_replace('A', '', $curr->fuzzy_kode);  // index next
 
-            // Rumus: gunakan Y(t-1) untuk komponen diagonal, m_j untuk lainnya
+            // Forecast awal
             $F = 0.0;
             for ($j = 1; $j <= 5; $j++) {
                 $weight = $p[$j];
@@ -589,6 +606,13 @@ class PenjualanController extends Controller
                 $val = ($j === $iState) ? $yPrev : $m[$j];
                 $F += $val * $weight;
             }
+
+            // Penyesuaian Dt
+            $deltaIdx = $jState - $iState;         // bisa negatif
+            $Dt = $deltaIdx * $halfL;        // (j-i) * (l/2)
+
+            $FprimeDec = round($F + $Dt, 2);                              // mis. 212.50
+            $FprimeInt = (int) round($FprimeDec, 0, PHP_ROUND_HALF_UP);   // mis. 213
 
             FtsForecast::create([
                 'universe_id' => $universe->id,
@@ -600,13 +624,112 @@ class PenjualanController extends Controller
                 'y_actual' => (int) $curr->nilai,
                 'y_prev' => (int) $yPrev,
                 'prev_state' => $rowState,
+                'curr_state' => $rowState,
+                'next_state' => $curr->fuzzy_kode,
                 'p1' => $p[1],
                 'p2' => $p[2],
                 'p3' => $p[3],
                 'p4' => $p[4],
                 'p5' => $p[5],
-                'f_value' => round($F, 2), // 2 desimal seperti contoh
+                'f_value' => round($F, 2),          // F(t)
+                'dt' => round($Dt, 1),         // Dt
+                'f_final' => $FprimeDec,            // F′(t)
+                'f_final_round' => $FprimeInt,            // F′(t) dibulatkan
             ]);
+        }
+    }
+
+    protected function computeMAPE(FtsIntervalSet $set): void
+    {
+        $rows = FtsForecast::where('interval_set_id', $set->id)
+            ->orderBy('urut')->get();
+
+        $sum = 0.0;
+        $cnt = 0;
+
+        foreach ($rows as $r) {
+            // hanya t>=2 yang punya final forecast
+            if ($r->f_final_round !== null && $r->urut >= 2 && $r->y_actual > 0) {
+                $ape = abs(($r->y_actual - $r->f_final_round) / $r->y_actual);
+                $r->ape = round($ape, 5); // simpan 5 desimal
+                $r->save();
+
+                $sum += $ape;
+                $cnt += 1;
+            } else {
+                $r->ape = null;
+                $r->save();
+            }
+        }
+
+        $mapePct = $cnt > 0 ? ($sum / $cnt) * 100.0 : 0.0;
+
+        FtsMapeSummary::updateOrCreate(
+            ['interval_set_id' => $set->id],
+            [
+                'n_rows' => $cnt,
+                'sum_ape' => round($sum, 6),
+                'mape_pct' => round($mapePct, 4),
+            ]
+        );
+    }
+
+    protected function computeFuture7(
+        FtsUniverse $universe,
+        FtsIntervalSet $set,
+        FtsMarkovMatrix $matrix
+    ): void {
+        // Clear lama
+        FtsFutureForecast::where('interval_set_id', $set->id)->delete();
+
+        // Midpoints m1..m5
+        $intervals = $set->intervals()->orderBy('urut')->get();
+        $m = [];
+        foreach ($intervals as $i => $iv)
+            $m[$i + 1] = (float) $iv->mid_point;
+
+        // Prob baris A2
+        $cells = FtsMarkovCell::where('matrix_id', $matrix->id)->get();
+        $p = [
+            1 => (float) ($cells->firstWhere(fn($x) => $x->row_state === 'A2' && $x->col_state === 'A1')->prob ?? 0),
+            2 => (float) ($cells->firstWhere(fn($x) => $x->row_state === 'A2' && $x->col_state === 'A2')->prob ?? 0),
+            3 => (float) ($cells->firstWhere(fn($x) => $x->row_state === 'A2' && $x->col_state === 'A3')->prob ?? 0),
+            4 => (float) ($cells->firstWhere(fn($x) => $x->row_state === 'A2' && $x->col_state === 'A4')->prob ?? 0),
+            5 => (float) ($cells->firstWhere(fn($x) => $x->row_state === 'A2' && $x->col_state === 'A5')->prob ?? 0),
+        ];
+
+        // Y input awal = F′(12) desimal (baris terakhir in-sample)
+        $last = FtsForecast::where('interval_set_id', $set->id)->orderByDesc('urut')->first();
+        $yIn = (float) ($last?->f_final ?? 0.0);
+
+        // Label bulan: Apr..Okt 2025
+        $labels = ['April 2025', 'Mei 2025', 'Juni 2025', 'Juli 2025', 'Agustus 2025', 'September 2025', 'Oktober 2025'];
+
+        for ($seq = 1; $seq <= 7; $seq++) {
+            // F = m1*P21 + Y*P22 + m3*P23 + m4*P24 + m5*P25
+            $F = $m[1] * $p[1] + $yIn * $p[2] + $m[3] * $p[3] + $m[4] * $p[4] + $m[5] * $p[5];
+            $Fdec = round($F, 2);
+            $Fround = (int) round($Fdec, 0, PHP_ROUND_HALF_UP);
+
+            FtsFutureForecast::create([
+                'interval_set_id' => $set->id,
+                'matrix_id' => $matrix->id,
+                'produk' => $universe->produk,
+                'start_state' => 'A2',
+                'seq' => $seq,
+                'periode_label' => $labels[$seq - 1],
+                'y_input' => round($yIn, 2),
+                'p1' => $p[1],
+                'p2' => $p[2],
+                'p3' => $p[3],
+                'p4' => $p[4],
+                'p5' => $p[5],
+                'f_value' => $Fdec,
+                'f_round' => $Fround,
+            ]);
+
+            // untuk step berikutnya, Y input = hasil desimal sekarang
+            $yIn = $Fdec;
         }
     }
 
