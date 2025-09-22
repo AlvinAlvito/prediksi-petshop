@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Prediksi Sembako</title>
+    <title>Oyen PetShop</title>
 
     <!-- CSS FILES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,7 +36,7 @@
             <div class="container">
                 <a class="navbar-brand" href="index.html">
                     <i class="bi-back"></i>
-                    <span>Prediksi Sembako</span>
+                    <span>Oyen PetShop</span>
                 </a>
 
                 <div class="d-lg-none ms-auto me-4">
@@ -113,10 +113,10 @@
                 <div class="row">
 
                     <div class="col-lg-10 col-12 mx-auto text-center">
-                        <h1 class="text-white">Sistem Prediksi Penjualan Sembako</h1>
+                        <h1 class="text-white">Sistem Peramalan Penjualan Oyen PetShop</h1>
 
                         <h6 class="text-white mt-3">
-                            Visualisasi & Prediksi Penjualan Menggunakan Metode Regresi Linier Sederhana
+                            Visualisasi & Prediksi Penjualan Menggunakan Metode Fuzzy Time Series
                         </h6>
 
                         <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal"
@@ -139,7 +139,7 @@
                                 <div>
                                     <h5 class="mb-2">Manajemen Data Penjualan</h5>
                                     <p class="mb-0">Admin dapat menambahkan data penjualan per bulan untuk setiap
-                                        produk sembako, seperti jumlah dan harga satuan.</p>
+                                        produk Oyen PetShop, seperti jumlah dan harga satuan.</p>
                                 </div>
                                 <span class="badge bg-success rounded-pill ms-auto">✓</span>
                             </div>
@@ -154,8 +154,8 @@
                             <div class="d-flex">
                                 <div>
                                     <h5 class="mb-2">Prediksi Otomatis</h5>
-                                    <p class="mb-0">Sistem menghitung prediksi penjualan 6 bulan ke depan secara
-                                        otomatis dengan metode regresi linier sederhana.</p>
+                                    <p class="mb-0">Sistem menghitung prediksi penjualan 7 bulan ke depan secara
+                                        otomatis dengan metode Fuzzy Time Series.</p>
                                 </div>
                                 <span class="badge bg-primary rounded-pill ms-auto">✓</span>
                             </div>
@@ -205,8 +205,8 @@
                                 <li>
                                     <h4 class="text-white mb-3">1. Input Data Penjualan Produk</h4>
                                     <p class="text-white">
-                                        Admin menginput data penjualan untuk masing-masing produk sembako dari bulan
-                                        Januari hingga Juni.
+                                        Admin menginput data penjualan untuk masing-masing produk Oyen Petshop dari bulan
+                                        April 2024 hingga Maret 2025.
                                         Data ini meliputi nama produk, harga satuan, dan jumlah penjualan per bulan.
                                     </p>
                                     <div class="icon-holder">
@@ -215,7 +215,7 @@
                                 </li>
 
                                 <li>
-                                    <h4 class="text-white mb-3">2. Sistem Proses Regresi Linier</h4>
+                                    <h4 class="text-white mb-3">2. Sistem Proses Fuzzy Time Series</h4>
                                     <p class="text-white">
                                         Setelah data disimpan, sistem secara otomatis menghitung persamaan regresi
                                         linier sederhana
@@ -228,7 +228,7 @@
                                 </li>
 
                                 <li>
-                                    <h4 class="text-white mb-3">3. Prediksi Penjualan 6 Bulan ke Depan</h4>
+                                    <h4 class="text-white mb-3">3. Prediksi Penjualan 7 Bulan ke Depan</h4>
                                     <p class="text-white">
                                         Berdasarkan persamaan regresi, sistem menghasilkan prediksi penjualan dari bulan
                                         Juli hingga Desember.
@@ -276,10 +276,10 @@
                 <div class="col-lg-3 col-12 mb-4 pb-2">
                     <a class="navbar-brand mb-2" href="/">
                         <i class="bi bi-bar-chart-line-fill"></i>
-                        <span>Sembako</span>
+                        <span>Oyen PetShop</span>
                     </a>
                     <p class="text-white">
-                        Sistem prediksi penjualan sembako menggunakan metode regresi linier sederhana. Membantu
+                        Sistem prediksi penjualan Oyen PetShop menggunakan metode regresi linier sederhana. Membantu
                         pengambilan keputusan bisnis dengan data yang akurat dan visual.
                     </p>
                 </div>
@@ -305,8 +305,8 @@
                         <a href="tel:081234567890" class="site-footer-link">0812-3456-7890</a>
                     </p>
                     <p class="text-white d-flex">
-                        <a href="mailto:admin@prediksisembako.id"
-                            class="site-footer-link">admin@prediksisembako.id</a>
+                        <a href="mailto:admin@prediksiOyen PetShop.id"
+                            class="site-footer-link">admin@prediksiOyen PetShop.id</a>
                     </p>
                 </div>
 
@@ -324,7 +324,7 @@
                     </div>
 
                     <p class="copyright-text mt-lg-5 mt-4">
-                        © 2025 Prediksi Penjualan Sembako.<br>
+                        © 2025 Prediksi Penjualan Oyen PetShop.<br>
                         All rights reserved.<br><br>
                     </p>
                 </div>
