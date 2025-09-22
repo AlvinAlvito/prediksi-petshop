@@ -510,7 +510,7 @@
                                                         <th class="text-center">Current state</th>
                                                         <th class="text-center">Next state</th>
                                                         <th class="text-end">Data Aktual Y(t)</th>
-                                                        <th class="text-end">Forecast awal F(t)</th>
+                                                        <th class="text-end">Peramalan awal F(t)</th>
                                                         <th class="text-end">Dt</th>
                                                     </tr>
                                                 </thead>
@@ -562,9 +562,9 @@
                                                     <th style="width:80px;">No</th>
                                                     <th style="width:120px;">Periode</th>
                                                     <th class="text-end">Data Aktual Y(t)</th>
-                                                    <th class="text-end">Forecast Awal F(t)</th>
+                                                    <th class="text-end">Peramalan Awal F(t)</th>
                                                     <th class="text-end">Dt</th>
-                                                    <th class="text-end">Forecast Akhir F′(t)</th>
+                                                    <th class="text-end">Peramalan Akhir F′(t)</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -717,7 +717,7 @@
                         <div class="row">
                             {{-- Chart 1: Aktual vs Forecast (Line) --}}
                             <div class="col-md-12 mb-4">
-                                <h6 class="fw-bold text-center mb-2">Data Aktual vs Forecast</h6>
+                                <h6 class="fw-bold text-center mb-2">Data Aktual vs Peramalan</h6>
                                 <div id="chartAktualForecast"></div>
                             </div>
 
@@ -735,7 +735,7 @@
 
                             {{-- Chart 4: Forecast 7 Periode ke Depan (Line) --}}
                             <div class="col-md-12 mb-4">
-                                <h6 class="fw-bold text-center mb-2">Forecast 7 Periode ke Depan</h6>
+                                <h6 class="fw-bold text-center mb-2">Peramalan 7 Periode ke Depan</h6>
                                 <div id="chartFuture7"></div>
                             </div>
                         </div>
