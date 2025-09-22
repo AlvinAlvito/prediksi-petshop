@@ -4,7 +4,7 @@
             <img src="/images/logo.jpg"  alt="">
         </div>
 
-        <span class="logo_name">Toko Gento</span>
+        <span class="logo_name">Oyen PetShop</span>
     </div>
 
     <div class="menu-items">

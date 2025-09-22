@@ -16,6 +16,7 @@ use App\Models\FtsMarkovCell;
 use App\Models\FtsForecast;
 use App\Models\FtsMapeSummary;
 use App\Models\FtsFutureForecast;
+use Illuminate\Support\Arr;
 
 
 class PenjualanController extends Controller
@@ -100,93 +101,161 @@ class PenjualanController extends Controller
     // ======================== TAHAP 1: SEMESTA U ========================
 
     // View ringkasan Semesta U (GET /admin/fts/semesta?id=...)
+
+
     public function semestaU(Request $request)
     {
-        // Ambil baris sesuai id (jika ada), kalau tidak pakai baris terbaru
+        // 1) Ambil baris penjualan terbaru atau berdasarkan ?id=
         $row = Penjualan::when($request->id, fn($q) => $q->where('id', $request->id))
-            ->orderByDesc('id')
-            ->first(); // <— BUKAN firstOrFail()
+            ->orderByDesc('id')->first();
 
         if (!$row) {
             return redirect()->route('penjualan.index')
                 ->with('error', 'Belum ada data penjualan. Silakan tambahkan data terlebih dahulu.');
         }
 
-        // Bangun deret (12 bulan) dari DB
+        // 2) Deret 12 bulan (Apr 2024 – Mar 2025) → label & nilai
         [$series, $values] = $this->buildSeriesFromRow($row);
+        $labels = array_map(fn($r) => $r['label'], $series);
+        $actual = array_map(fn($r) => (int) $r['jumlah'], $series);
 
-        // Ambil ringkasan semesta; jika belum ada, hitung sekarang
+        // 3) Pastikan pipeline tersedia (universe → intervals → fuzzy → FLR → FLRG → R → forecast → MAPE → future)
         $universe = FtsUniverse::where('produk', $row->nama_produk)
-            ->whereNull('periode_mulai')->whereNull('periode_selesai')
-            ->first();
+            ->whereNull('periode_mulai')->whereNull('periode_selesai')->first();
 
         if (!$universe) {
-            $universe = $this->computeUniverse(
-                produk: $row->nama_produk,
-                periodeMulai: null,
-                periodeSelesai: null,
-                values: $values,
-                d1: 2,
-                d2: 2,
-                series: $series
-            );
+            $universe = $this->computeUniverse($row->nama_produk, null, null, $values, 2, 2, $series);
         }
+
         $set = FtsIntervalSet::where('universe_id', $universe->id)->where('method', 'sturges')->first();
-        if (!$set) {
+        if (!$set)
             $set = $this->computeIntervalsFromUniverse($universe, count($values));
-        }
 
-        $intervals = $set->intervals()->get();
+        $this->ensureFuzzySetsForIntervalSet($set);
+        $this->computeFuzzifications($universe, $set, $series, $values);
+        $this->computeFLR($set);
+        $this->computeFLRG($set);
+        $matrix = $this->computeMarkovMatrix($set);
+        $this->computeInitialForecasts($universe, $set, $matrix);
+        $this->computeMAPE($set);
+        $this->computeFuture7($universe, $set, $matrix);
 
+        // 4) Ambil data ringkas untuk tabel (supaya view tetap jalan)
+        $intervals = $set->intervals()->select('urut', 'kode', 'lower_bound', 'upper_bound', 'mid_point')->orderBy('urut')->get();
         $fuzzySets = FtsFuzzySet::where('interval_set_id', $set->id)
-            ->orderBy('urut')->get();
-
-        $fuzzis = FtsFuzzification::where('interval_set_id', $set->id)
-            ->orderBy('urut')->get();
-
-        $flrs = FtsFlr::where('interval_set_id', $set->id)->orderBy('urut_from')->get();
-
-        $flrgRaw = FtsFlrgItem::where('interval_set_id', $set->id)
-            ->orderBy('current_state')
-            ->orderBy('next_state')
-            ->get();
-
-        $flrg = [];
-        foreach ($flrgRaw as $it) {
-            $flrg[$it->current_state][$it->next_state] = $it->freq;
-        }
-
-        $matrix = FtsMarkovMatrix::where('interval_set_id', $set->id)->first();
-        $cells = $matrix ? $matrix->cells()->orderBy('row_state')->orderBy('col_state')->get() : collect();
-
-        $forecasts = FtsForecast::where('interval_set_id', $set->id)->orderBy('urut')->get();
-
+    ->select('kode','urut','mu_u1','mu_u2','mu_u3','mu_u4','mu_u5')
+    ->orderBy('urut')->get();
+        $fuzzis = FtsFuzzification::where('interval_set_id', $set->id)->select('urut', 'periode_label', 'nilai', 'fuzzy_kode')->orderBy('urut')->get();
+        $flrs = FtsFlr::where('interval_set_id', $set->id)->select('urut_from', 'urut_to', 'state_from', 'state_to')->orderBy('urut_from')->get();
+        $cells = FtsMarkovCell::where('matrix_id', $matrix->id)->select('row_state', 'col_state', 'prob')->orderBy('row_state')->orderBy('col_state')->get();
+        $forecasts = FtsForecast::where('interval_set_id', $set->id)->select('urut', 'periode_label', 'y_actual', 'f_value', 'dt', 'f_final', 'f_final_round', 'ape')->orderBy('urut')->get();
         $mape = FtsMapeSummary::where('interval_set_id', $set->id)->first();
-        $future = FtsFutureForecast::where('interval_set_id', $set->id)
-            ->orderBy('seq')->get();
+        $future = FtsFutureForecast::where('interval_set_id', $set->id)->select('seq', 'periode_label', 'f_round')->orderBy('seq')->get();
+
+        // 5) BANGUN DATA CHART (primitif arrays saja) — dipisah ke helper
+        $charts = $this->buildChartsPayload(
+            labels: $labels,
+            actual: $actual,
+            forecasts: $forecasts,
+            cells: $cells,
+            mape: $mape,
+            future: $future
+        );
 
         return view('admin.fts-semesta', [
-            // ...payload lama...
             'produk' => $row->nama_produk,
             'series' => $series,
             'universe' => $universe,
             'iset' => $set,
             'intervals' => $intervals,
-            'fuzzySets' => $fuzzySets,
             'fuzzis' => $fuzzis,
             'flrs' => $flrs,
-            'flrg' => $flrg,
-            // baru:
             'markov' => $matrix,
             'markovCells' => $cells,
             'forecasts' => $forecasts,
             'mape' => $mape,
             'future' => $future,
+            'fuzzySets'   => $fuzzySets,
+
+            // hanya satu objek untuk semua chart → lebih ringan & jelas tipenya
+            'charts' => $charts,
         ]);
-
-
-
     }
+
+    /**
+     * Build payload data untuk ApexCharts.
+     * @param array<int,string> $labels
+     * @param array<int,int>    $actual
+     * @return array{
+     *   aktual_vs_forecast: array{labels: array<int,string>, aktual: array<int,int>, forecast: array<int,?int>},
+     *   error_mape: array{labels: array<int,string>, ape: array<int,float>, mape: float},
+     *   markov_heatmap: array<int,array{name:string,data:array<int,array{x:string,y:float}>>> ,
+     *   future: array{labels: array<int,string>, values: array<int,int>}
+     * }
+     */
+    private function buildChartsPayload(array $labels, array $actual, $forecasts, $cells, $mape, $future): array
+    {
+        // Forecast bulat per urut (sinkron ke label indeks)
+        $fcByUrut = [];
+        foreach ($forecasts as $f) {
+            $fcByUrut[(int) $f->urut] = $f->f_final_round; // bisa null untuk t=1
+        }
+        $forecastSeries = [];
+        for ($i = 1; $i <= count($labels); $i++) {
+            $forecastSeries[] = $fcByUrut[$i] ?? null;
+        }
+
+        // APE & labelnya (hanya t>=2)
+        $ape = [];
+        $apeLabels = [];
+        foreach ($forecasts as $f) {
+            if ((int) $f->urut >= 2 && $f->ape !== null) {
+                $ape[] = (float) $f->ape * 100.0; // tampilkan dalam %
+                $apeLabels[] = $f->periode_label;
+            }
+        }
+        $mapePct = $mape?->mape_pct ?? 0.0;
+
+        // Heatmap Markov (A1..A5)
+        $states = ['A1', 'A2', 'A3', 'A4', 'A5'];
+        $rows = [];
+        foreach ($states as $rowState) {
+            $row = ['name' => $rowState, 'data' => []];
+            foreach ($states as $colState) {
+                /** @var \App\Models\FtsMarkovCell|null $cell */
+                $cell = $cells->firstWhere(fn($c) => $c->row_state === $rowState && $c->col_state === $colState);
+                $row['data'][] = ['x' => $colState, 'y' => round((float) ($cell->prob ?? 0), 2)];
+            }
+            $rows[] = $row;
+        }
+
+        // Future forecast 7 periode
+        $futureLabels = [];
+        $futureValues = [];
+        foreach ($future as $ff) {
+            $futureLabels[] = $ff->periode_label;
+            $futureValues[] = (int) $ff->f_round;
+        }
+
+        return [
+            'aktual_vs_forecast' => [
+                'labels' => $labels,
+                'aktual' => $actual,
+                'forecast' => $forecastSeries,
+            ],
+            'error_mape' => [
+                'labels' => $apeLabels,
+                'ape' => $ape,
+                'mape' => (float) $mapePct,
+            ],
+            'markov_heatmap' => $rows,
+            'future' => [
+                'labels' => $futureLabels,
+                'values' => $futureValues,
+            ],
+        ];
+    }
+
 
 
     // Bangun array series & values dari 1 baris penjualan (mulai April 2024 s/d Maret 2025)
@@ -231,7 +300,7 @@ class PenjualanController extends Controller
         int $d2,
         array $series
     ): FtsUniverse {
-        $vals = $values;                  // jika ingin abaikan nol, bisa filter di sini
+        $vals = $values;
         $n = count($vals);
         $dmin = min($vals);
         $dmax = max($vals);
@@ -264,7 +333,6 @@ class PenjualanController extends Controller
         $d1 = 2;
         $d2 = 2;
 
-        // 1) Semesta U
         $universe = $this->computeUniverse(
             produk: $row->nama_produk,
             periodeMulai: null,
@@ -275,7 +343,6 @@ class PenjualanController extends Controller
             series: $series
         );
 
-        // 2) Interval (Sturges + panjang interval + daftar u1..uK)
         $set = $this->computeIntervalsFromUniverse($universe, count($values));
 
         $this->ensureFuzzySetsForIntervalSet($set);
@@ -285,10 +352,7 @@ class PenjualanController extends Controller
         $this->computeMarkovMatrix($set);
         $matrix = $this->computeMarkovMatrix($set);
         $this->computeInitialForecasts($universe, $set, $matrix);
-        // 8) Hitung MAPE (in-sample)
         $this->computeMAPE($set);
-
-        // 9) Peramalan 7 bulan ke depan (Apr–Okt 2025) dengan current state = A2
         $this->computeFuture7($universe, $set, $matrix);
 
 
@@ -347,15 +411,8 @@ class PenjualanController extends Controller
 
     protected function ensureFuzzySetsForIntervalSet(FtsIntervalSet $set): void
     {
-        // Hapus & rebuild agar selalu konsisten dengan k=5
         FtsFuzzySet::where('interval_set_id', $set->id)->delete();
 
-        // Matriks membership sesuai instruksi:
-        // A1=1/u1 + 0.5/u2
-        // A2=0.5/u1 + 1/u2 + 0.5/u3
-        // A3=0.5/u2 + 1/u3 + 0.5/u4
-        // A4=0.5/u3 + 1/u4 + 0.5/u5
-        // A5=0.5/u4 + 1/u5
         $rows = [
             ['kode' => 'A1', 'urut' => 1, 'mu' => [1, 0.5, 0, 0, 0]],
             ['kode' => 'A2', 'urut' => 2, 'mu' => [0.5, 1, 0.5, 0, 0]],
@@ -732,10 +789,5 @@ class PenjualanController extends Controller
             $yIn = $Fdec;
         }
     }
-
-
-
-
-
 
 }

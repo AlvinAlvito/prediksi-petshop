@@ -670,7 +670,8 @@
                         @if (!empty($future) && count($future) > 0)
                             <div class="card mt-3">
                                 <div class="card-header fw-bold">
-                                  <span class="btn btn-primary btn-sm">Hasil Akhir</span>  Peramalan 7 Periode ke Depan (State Saat Ini: A2)
+                                    <span class="btn btn-primary btn-sm">Hasil Akhir</span> Peramalan 7 Periode ke Depan
+                                    (State Saat Ini: A2)
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -706,6 +707,42 @@
 
                     </div>
 
+                    {{-- Grafik Chart Apex --}}
+                    <div class="activity">
+                        <div class="title mb-3">
+                            <i class="uil uil-chart-bar"></i>
+                            <span class="text">Analisis dan Prediksi</span>
+                        </div>
+
+                        <div class="row">
+                            {{-- Chart 1: Aktual vs Forecast (Line) --}}
+                            <div class="col-md-12 mb-4">
+                                <h6 class="fw-bold text-center mb-2">Data Aktual vs Forecast</h6>
+                                <div id="chartAktualForecast"></div>
+                            </div>
+
+                            {{-- Chart 2: APE per Periode + garis MAPE (Bar + Annotation) --}}
+                            <div class="col-md-6 mb-4">
+                                <h6 class="fw-bold text-center mb-2">Error APE (%) per Periode & Garis MAPE</h6>
+                                <div id="chartAPE"></div>
+                            </div>
+
+                            {{-- Chart 3: Heatmap Probabilitas Transisi Markov --}}
+                            <div class="col-md-6 mb-4">
+                                <h6 class="fw-bold text-center mb-2">Probabilitas Transisi Markov (Heatmap)</h6>
+                                <div id="chartMarkovHeatmap"></div>
+                            </div>
+
+                            {{-- Chart 4: Forecast 7 Periode ke Depan (Line) --}}
+                            <div class="col-md-12 mb-4">
+                                <h6 class="fw-bold text-center mb-2">Forecast 7 Periode ke Depan</h6>
+                                <div id="chartFuture7"></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
 
 
 
@@ -724,4 +761,90 @@
             </div>
         </div>
     </section>
+
+    {{-- ApexCharts CDN --}}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script>
+        const CH = @json($charts);
+
+        // Contoh: Aktual vs Forecast
+        new ApexCharts(document.querySelector("#chartAktualForecast"), {
+            chart: {
+                type: 'line',
+                height: 360
+            },
+            series: [{
+                    name: "Aktual",
+                    data: CH.aktual_vs_forecast.aktual
+                },
+                {
+                    name: "Forecast",
+                    data: CH.aktual_vs_forecast.forecast
+                },
+            ],
+            xaxis: {
+                categories: CH.aktual_vs_forecast.labels
+            }
+        }).render();
+
+        // APE + MAPE
+        new ApexCharts(document.querySelector("#chartAPE"), {
+            chart: {
+                type: 'bar',
+                height: 360
+            },
+            series: [{
+                name: "APE (%)",
+                data: CH.error_mape.ape
+            }],
+            xaxis: {
+                categories: CH.error_mape.labels
+            },
+            annotations: {
+                yaxis: [{
+                    y: CH.error_mape.mape,
+                    borderColor: '#FF4560',
+                    strokeDashArray: 4,
+                    label: {
+                        text: 'MAPE ' + CH.error_mape.mape.toFixed(2) + '%',
+                        style: {
+                            color: '#fff',
+                            background: '#FF4560'
+                        }
+                    }
+                }]
+            }
+        }).render();
+
+        // Heatmap Markov
+        new ApexCharts(document.querySelector("#chartMarkovHeatmap"), {
+            chart: {
+                type: 'heatmap',
+                height: 360
+            },
+            series: CH.markov_heatmap,
+            dataLabels: {
+                enabled: true,
+                formatter: v => (v ?? 0).toFixed(2)
+            },
+        }).render();
+
+        // Future 7
+        new ApexCharts(document.querySelector("#chartFuture7"), {
+            chart: {
+                type: 'line',
+                height: 360
+            },
+            series: [{
+                name: "Forecast",
+                data: CH.future.values
+            }],
+            xaxis: {
+                categories: CH.future.labels
+            }
+        }).render();
+    </script>
+
+
 @endsection
