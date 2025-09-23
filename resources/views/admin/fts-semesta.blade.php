@@ -15,10 +15,10 @@
 
         <div class="dash-content">
             <div class="activity">
-                <div class="title d-flex align-items-center justify-content-between">
-                    <div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="title">
                         <i class="uil uil-clipboard-notes"></i>
-                        <span class="text">Hasil Dan Proses</span>
+                        <span class="text">Hasil & Proses</span>
                     </div>
                     <a href="{{ route('penjualan.index') }}" class="btn btn-outline-secondary btn-sm">
                         &larr; Kembali ke Data Penjualan

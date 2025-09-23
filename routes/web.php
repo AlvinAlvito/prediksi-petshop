@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\KoefisieniController;
-use App\Http\Controllers\PrediksiController;
+use App\Http\Controllers\PeramalanController;
 
 // ===================
 // Halaman Login
@@ -44,13 +44,9 @@ use App\Http\Controllers\DashboardController;
 
 
 Route::get('/admin', function () {
-    if (!session('is_admin')) {
-        return redirect('/')->with('error', 'Anda tidak memiliki akses ke halaman admin.');
-    }
-    return view('admin.index');
+    if (!session('is_admin')) return redirect('/');
+    return app(DashboardController::class)->index();
 })->name('admin.index');
-
-
 
 // ===================
 // CRUD Data Penjualan
@@ -84,6 +80,9 @@ Route::get('/admin/fts/semesta', function (Request $request) {
     return app(PenjualanController::class)->semestaU($request);
 })->name('fts.semesta');
 
-
+Route::get('/admin/data-peramalan', function () {
+    if (!session('is_admin')) return redirect('/');
+    return app(PeramalanController::class)->index(request());
+})->name('peramalan.index');
 
 
