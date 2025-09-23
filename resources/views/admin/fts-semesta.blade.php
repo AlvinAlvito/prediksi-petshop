@@ -711,7 +711,7 @@
                     <div class="activity">
                         <div class="title mb-3">
                             <i class="uil uil-chart-bar"></i>
-                            <span class="text">Analisis dan Prediksi</span>
+                            <span class="text">Analisis dan Peramalan</span>
                         </div>
 
                         <div class="row">

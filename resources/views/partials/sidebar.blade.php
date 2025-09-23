@@ -24,7 +24,7 @@
             <li>
                 <a href="/admin/fts/semesta" class="{{ Request::is('/admin/fts/semesta') ? 'active' : '' }}">
                     <i class="uil uil-files-landscapes"></i>
-                    <span class="link-name">Semesta</span>
+                    <span class="link-name">Proses</span>
                 </a>
             </li>
             <li>
